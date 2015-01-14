@@ -1,5 +1,8 @@
 <?php
 
+require_once("WeatherDay.php");
+require_once("City.php");
+
 class WeatherReport {
 
 	public $dayItems;
@@ -9,7 +12,7 @@ class WeatherReport {
 	public function __construct() {
 
 		$this->dayItems = array();
-		
+
 
 	}
 

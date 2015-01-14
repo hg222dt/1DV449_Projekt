@@ -27,13 +27,37 @@ class WeatherController {
 
 					$userInput = $this->weatherView->getPostedQuery();
 					
-					$weatherReport = $this->weatherModel->retrieveWeatherData($userInput);
+					$this->weatherModel->retrieveWeatherData($userInput);
 					
-					return $this->weatherView->showStartPage($weatherReport);
+					if(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)>1) {
+
+
+						return $this->weatherView->showStartPageMultipleResults($this->weatherModel->retrievedCities);
+					
+					} elseif(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)<1) {
+					
+
+						return $this->weatherView->showStartPageNoMatch();
+					
+					} else {
+
+						//Sök upp väderdata
+
+
+						return $this->weatherView->showStartPageResult($this->weatherModel->weatherApiHandler->weatherReport);
+					}
+
+					
+					return $this->weatherView->showStartPage($weatherData);
 					break;
 
 				default:
 					return $this->weatherView->showStartPage();
+					break;
+
+				case WeatherView::ACTION_USER_CHOSE_ALTERNATIVE:
+
+
 					break;
 			}	
 		} catch (Exception $e) {

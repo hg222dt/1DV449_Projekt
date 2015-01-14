@@ -18,7 +18,7 @@ class WeatherModel {
 	}
 
 	public function retrieveWeatherData($userInput) {
-		return $weatherApiHandler->retrieveWeatherData($userInput);
+		$weatherApiHandler->retrieveWeatherData($userInput);
 	}
 
 

@@ -11,6 +11,9 @@ class WeatherView {
 
 	//Konstanter för användar-actions
 	const ACTION_USER_STANDARD_SEARCH = "citySearch";
+	const ACTION_USER_CHOSE_ALTERNATIVE = "userChoseAlternative"
+
+	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
 	private $siteModel;
 
