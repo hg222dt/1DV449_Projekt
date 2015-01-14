@@ -32,9 +32,6 @@ class WeatherApiHandler {
 				//Använd cache och hämta från databasen
 				$data = $getDataFromRepository($cityResult);
 
-				//Konvertera data till WeatherReport
-
-
 			} else {
 				//Hämta från webbservice
 				$this->weatherReport = $retrieveWeatherDataFromWeb($cityResult);
@@ -146,10 +143,16 @@ class WeatherApiHandler {
 
 	public function retrieveWeatherDataFromWeb($city) {
 
+		$getCorrectPeriod( = function($value, $key) {
+			if($value['period'] == 2) {
+				return $value;
+			}
+		}
+
 		$sortDays = function($a, $b) {
 
-			$aTime = strtotime($a->time->from);
-			$bTime = strtotime($b->time->from);
+			$aTime = $a->time;
+			$bTime = $b->time;
 
 			if ($aTime == $aTime) return 0;
 			   return ($aTime < $aTime) ? 1 : -1;
@@ -166,13 +169,20 @@ class WeatherApiHandler {
 
 		$weatherDaysXml = $yrXml->tabular;
 
-		$weatherDaysXml = usort($weatherDaysXml, $sortDays);
+		$weatherDaysXml = array_walk($weatherDaysXml, $getCorrectPeriod);
+
 
 		$weatherDays = array();
 		
-		foreach ($weatherDaysXml as $key => $value) {
-			array_push($weatherDays, new weatherDay($value->time->from, $value->symbol->var, $value->temperature->value));
+		foreach ($weatherDaysXml as $key => $day) {
+			array_push($weatherDays, new weatherDay(strtotime($day->time['from']), $day->symbol['var'], $day->temperature['value']));
 		}
+
+		$weatherDays = usort($weatherDays, $sortDays);
+
+		$weatherDays = array_slice($weatherDays, 0, 5, true);
+
+
 
 		return new WetherReport($weatherDays, $city);
 	}
