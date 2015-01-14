@@ -5,12 +5,24 @@
  *
  **/
 
+ require_once("WeatherApiHandler.php");
+
 class WeatherModel {
 
-	//Gör försök att logga in åt användaren
-	public function getWeatherDataAsync() {
 
+	public $weatherApiHandler;
 
-		return false;
+	public function __construct() {
+		$this->weatherApiHandler = new WeatherApiHandler();
+
 	}
+
+	public function retrieveWeatherData($userInput) {
+		return $weatherApiHandler->retrieveWeatherData($userInput);
+	}
+
+
+
+
+	
 }

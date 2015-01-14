@@ -4,7 +4,7 @@ require_once("./view/WeatherView.php");
 require_once("./model/WeatherModel.php");
 
 /*
- * Kontroller-klass
+ * Controller-klass
  *
  **/
 
@@ -20,7 +20,29 @@ class WeatherController {
 
 	public function doControll() {
 
-		return $this->weatherView->showStartPage();
+		try {
+			switch($this->weatherView->getUserAction()) {
 
+				case WeatherView::ACTION_USER_STANDARD_SEARCH:
+
+					$userInput = $this->weatherView->getPostedQuery();
+					
+					$weatherReport = $this->weatherModel->retrieveWeatherData($userInput);
+					
+					return $this->weatherView->showStartPage($weatherReport);
+					break;
+
+				default:
+					return $this->weatherView->showStartPage();
+					break;
+			}	
+		} catch (Exception $e) {
+			return WeatherView::MESSAGE_ERROR_FATAL;
+		}
 	}
+
+
+
+
+	
 }
