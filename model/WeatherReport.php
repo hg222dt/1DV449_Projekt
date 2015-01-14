@@ -9,15 +9,11 @@ class WeatherReport {
 	public $city;
 
 
-	public function __construct() {
+	public function __construct($dayItems, $city) {
 
-		$this->dayItems = array();
-
-
+		$this->dayItems = $dayItems;
+		$this->city = $city;
+		
 	}
-
-
-
-
 
 }

@@ -1,25 +1,22 @@
 <?php
 
 require_once("WeatherReport.php");
-require_once("HierarchyData.php");
+require_once("WeatherDay.php");
+require_once("City.php");
+
 
 class WeatherApiHandler {
 	
 	public $weatherReport;
-
-	public $foundCities;
-
 	public $geonameIds;
-
 	public $retrievedCities;
 
 
 	public function __construct() {
-		$weatherReport = new WeatherReport();
+
 		$retrievedCities = array();
 		$geonameIds = array();
 	}
-
 
 	//Gör försök att logga in åt användaren
 	public function retrieveWeatherData($userInput) {
@@ -40,14 +37,10 @@ class WeatherApiHandler {
 
 			} else {
 				//Hämta från webbservice
-				$data = $retrieveWeatherDataFromWeb($cityResult);
-
-				//Konvertera data till WeatherReport
-
+				$this->weatherReport = $retrieveWeatherDataFromWeb($cityResult);
 			}
 		}
 	}
-
 
 	public function shouldWeUseCache($city) {
 		
@@ -55,7 +48,6 @@ class WeatherApiHandler {
 		return false;
 
 	}
-
 
 	public function searchcity($userInput) {
 
@@ -77,9 +69,6 @@ class WeatherApiHandler {
 			return $this->retrievedCities;
 		}
 	}
-
-
-
 
 
 	public function getDataFromRepository($city) {
@@ -157,25 +146,35 @@ class WeatherApiHandler {
 
 	public function retrieveWeatherDataFromWeb($city) {
 
+		$sortDays = function($a, $b) {
+
+			$aTime = strtotime($a->time->from);
+			$bTime = strtotime($b->time->from);
+
+			if ($aTime == $aTime) return 0;
+			   return ($aTime < $aTime) ? 1 : -1;
+			
+		}
+
 		//Get data from Yr.no api
 
 		$getYrDataUrl = "http://www.yr.no/place/" . $city->countryName . "/" . $city->provinceName . "/" . $city->cityName . "/forecast.xml";
 
-		$weaterData = $this->curlGetRequest($getYrDataUrl);
+		$weatherData = $this->curlGetRequest($getYrDataUrl);
 
-		$yrXml = simplexml_load_string($weaterData) or die("Error: Cannot create object");
+		$yrXml = simplexml_load_string($weatherData) or die("Error: Cannot create object");
 
-		$weatherDays = $yrXml->tabular;
+		$weatherDaysXml = $yrXml->tabular;
 
-				
+		$weatherDaysXml = usort($weatherDaysXml, $sortDays);
 
+		$weatherDays = array();
+		
+		foreach ($weatherDaysXml as $key => $value) {
+			array_push($weatherDays, new weatherDay($value->time->from, $value->symbol->var, $value->temperature->value));
+		}
 
-
-		//Hämta rätt väderdagar. Sortera och hämta de fem senaste.
-
-
-
-
+		return new WetherReport($weatherDays, $city);
 	}
 
 
