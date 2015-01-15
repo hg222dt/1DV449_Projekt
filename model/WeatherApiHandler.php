@@ -3,6 +3,7 @@
 require_once("WeatherReport.php");
 require_once("WeatherDay.php");
 require_once("City.php");
+require_once("myDummyXML.php");
 
 
 class WeatherApiHandler {
@@ -10,12 +11,15 @@ class WeatherApiHandler {
 	public $weatherReport;
 	public $geonameIds;
 	public $retrievedCities;
+	public $dummyStrXML;
 
 
 	public function __construct() {
 
-		$retrievedCities = array();
-		$geonameIds = array();
+		$this->retrievedCities = array();
+		$this->geonameIds = array();
+		$myDummyXML = new myDummyXML();
+		$this->dummyStrXML = $myDummyXML->xml;
 	}
 
 	//Gör försök att logga in åt användaren
@@ -26,6 +30,7 @@ class WeatherApiHandler {
 
 		//Om det bara gick att hitta en stad på sökordet - Skapa väderrapport på det.
 		if(sizeof($cityResult) == 1) {
+
 			//Skapa väderrapport
 
 			if($this->shouldWeUseCache($cityResult)) {
@@ -33,8 +38,9 @@ class WeatherApiHandler {
 				$data = $getDataFromRepository($cityResult);
 
 			} else {
+
 				//Hämta från webbservice
-				$this->weatherReport = $retrieveWeatherDataFromWeb($cityResult);
+				$this->weatherReport = $this->retrieveWeatherDataFromWeb($cityResult);
 			}
 		}
 	}
@@ -50,19 +56,23 @@ class WeatherApiHandler {
 
 		$geonameId = $this->getGeonameId($userInput);
 
+//var_dump($geonameId);
+
 		//Flera städer matchar
 		if(is_array($geonameId)) {
 
+
 			foreach ($geonameId as $value) {
 
-				array_push($this->retrievedCities, $this->getHierarchyToCityObj($value));
+				$city = $this->getHierarchyToCityObj((string)$value);
+				array_push($this->retrievedCities, $city);
+				
 			}	
+
 		} 
 		//En stad matchar
 		elseif ($geonameId != null) {
-
-			array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));					
-
+			array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));		
 			return $this->retrievedCities;
 		}
 	}
@@ -77,17 +87,26 @@ class WeatherApiHandler {
 
 	public function getGeonameId($userInput) {
 
-		$getGeonameIdUrl = "http://api.geonames.org/searchJSON?name_equals=" . $userInput . "&maxRows=20&username=henkenet&featureClass=P";
+		$getGeonameIdUrl = "http://api.geonames.org/search?name_equals=" . $userInput . "&maxRows=20&username=henkenet&featureClass=P";
 		$textSearchData = $this->curlGetRequest($getGeonameIdUrl);
-		$textSearchData = json_decode($textSearchData, true);
+
+		$textSearchData = simplexml_load_string($textSearchData) or die("Error: Cannot create object");
+
 		$geonameIds = array();
-		$geonameIds = $textSearchData["geonames"]['geonameId'];
+
+		foreach($textSearchData->children() as $geonames) { 
+
+			$id = (string)$geonames->geonameId;
+
+			if(strlen($id) != 0) {
+			    array_push($geonameIds, $geonames->geonameId);
+			}
+		} 
 
 		//Om flera id har hittats. Returnera sätt till publict fält. Och returnera array med alla id.
 		if(sizeof($geonameIds) > 1) {
 
 			$this->geonameIds = $geonameIds;
-
 
 			return $geonameIds;
 		
@@ -95,8 +114,7 @@ class WeatherApiHandler {
 		//Om bara en stad matchar. Skicka till baka det första elementet ut geoname-arrayet.
 		elseif (sizeof($geonameIds) == 1){
 		
-			return $geonameId[0];
-		
+			return $geonameIds[0];
 		} 
 		//Om inget har matchat. Returnera bara null.
 		else {
@@ -111,80 +129,109 @@ class WeatherApiHandler {
 		$getArrayFcode = function($value, $key, $searchTermValue) {
 
 			if($value['fcode'] == $searchTermValue) {
+
 				return $value;
 			}
 		};
 
+		$getObjFromXml = function($searchKey, $searchTerm, $objects) {
+			foreach ($objects as $key => $value) {
+
+				//var_dump((string)$value->children());
+
+				//var_dump((string)$value->children()->fcode);
+
+				if((string)$value->children()->$searchKey == $searchTerm) {
+					//var_dump("Hittade en!");
+					return $value;
+				}
+			}
+		};
+
 		//Vi har hittat ett sökresultat med en stad
-		$getHierarchyUrl = "http://api.geonames.org/hierarchyJSON?geonameId=" . $geonameId . "&username=henkenet";
+		$getHierarchyUrl = "http://api.geonames.org/hierarchy?geonameId=" . $geonameId . "&username=henkenet";
 
-		$data = $curlGetRequest($getHierarchyUrl);
+		$data = $this->curlGetRequest($getHierarchyUrl);
 
-		$data = json_decode($data, true);
+		$data = simplexml_load_string($data) or die("Error: Cannot create object");
 
-		$hierarchyObjects = $data['geonames'];
+		$hierarchyObjects = $data->children();
 
-		$cityObj = array_walk($hierarchyObjects, $getArrayFcode, "P");
-		$muncipObj = array_walk($hierarchyObjects, $getArrayFcode, "ADM2");
-		$provinceObj  = array_walk($hierarchyObjects, $getArrayFcode, "ADM1");
-		$countryObj = array_walk($hierarchyObjects, $getArrayFcode, "PCLI");
 
-		$cityName = $cityObj['name'];
-		$topononymName = $cityObj['toponymName'];
-		$muncipName = $muncipObj['name'];
-		$provinceName = $provinceObj['name'];
-		$countryName = $countryObj['name'];
+		$cityObj = $getObjFromXml("fcl", "P", $hierarchyObjects);
+		$muncipObj = $getObjFromXml("fcode", "ADM2", $hierarchyObjects);
+		$provinceObj  = $getObjFromXml("fcode", "ADM1", $hierarchyObjects);
+		$countryObj = $getObjFromXml("fcode", "PCLI", $hierarchyObjects);
 
-		return new City($geonameId, $cityName, $provinceName, $countryName);
+		if($cityObj != null && property_exists($cityObj, 'name') && property_exists($cityObj, 'toponymName')){
+			$cityName = (string) $cityObj->name;
+			$toponymName = (string) $cityObj->toponymName;
+		}
 
+		if($muncipObj != null && property_exists($muncipObj, 'name')){
+			$muncipName = (string) $muncipObj->name;	
+		}
+
+		if($provinceObj != null && property_exists($provinceObj, 'name')){
+			$provinceName = (string) $provinceObj->name;
+		}
+
+		if($countryObj != null && property_exists($countryObj, 'name')){
+			$countryName = (string) $countryObj->name;
+		}
+
+
+		$city = new City((string)$geonameId, $cityName, $toponymName, $provinceName, $countryName);
+
+		return $city;
 	}
-
 
 
 	public function retrieveWeatherDataFromWeb($city) {
 
-		$getCorrectPeriod( = function($value, $key) {
-			if($value['period'] == 2) {
+		$city = $city[0];
+
+		$getCorrectPeriod = function($value) {
+			if($value->period == "2") {
 				return $value;
 			}
-		}
+		};
 
 		$sortDays = function($a, $b) {
 
 			$aTime = $a->time;
 			$bTime = $b->time;
 
-			if ($aTime == $aTime) return 0;
-			   return ($aTime < $aTime) ? 1 : -1;
+			if ($aTime == $bTime) return 0;
+			   return ($aTime < $bTime) ? 1 : -1;
 			
-		}
+		};
 
 		//Get data from Yr.no api
 
-		$getYrDataUrl = "http://www.yr.no/place/" . $city->countryName . "/" . $city->provinceName . "/" . $city->cityName . "/forecast.xml";
 
+		$getYrDataUrl = "http://www.yr.no/place/" . $city->countryName . "/" . $city->provinceName . "/" . $city->cityName . "/forecast.xml";
 		$weatherData = $this->curlGetRequest($getYrDataUrl);
 
 		$yrXml = simplexml_load_string($weatherData) or die("Error: Cannot create object");
 
-		$weatherDaysXml = $yrXml->tabular;
+//		$yrXml=simplexml_load_string($this->dummyStrXML);
 
-		$weatherDaysXml = array_walk($weatherDaysXml, $getCorrectPeriod);
+		$weatherDayItems = array();
 
-
-		$weatherDays = array();
 		
-		foreach ($weatherDaysXml as $key => $day) {
-			array_push($weatherDays, new weatherDay(strtotime($day->time['from']), $day->symbol['var'], $day->temperature['value']));
+		foreach ($yrXml->forecast->tabular->children() as $value) {
+			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period']));
 		}
 
-		$weatherDays = usort($weatherDays, $sortDays);
+		//Dra ut korrekta perioder
+		$weatherDays = array_filter($weatherDayItems, $getCorrectPeriod);
 
-		$weatherDays = array_slice($weatherDays, 0, 5, true);
+		usort($weatherDays, $sortDays);
 
+		$weatherDaysSliced = array_slice($weatherDays, 0, 5, true);
 
-
-		return new WetherReport($weatherDays, $city);
+		return new WeatherReport($weatherDays, $city);
 	}
 
 

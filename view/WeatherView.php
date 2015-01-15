@@ -11,7 +11,7 @@ class WeatherView {
 
 	//Konstanter för användar-actions
 	const ACTION_USER_STANDARD_SEARCH = "citySearch";
-	const ACTION_USER_CHOSE_ALTERNATIVE = "userChoseAlternative"
+	const ACTION_USER_CHOSE_ALTERNATIVE = "userChoseAlternative";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
@@ -32,10 +32,7 @@ class WeatherView {
 		}
 	}
 
-	public function showStartPage() {
-
-		$ret = "
-
+	public $startPageFoundation = "
 <div class='row'>
 	<div id='meny'>
 		<h1>VäderKAOS!</h1>
@@ -47,10 +44,34 @@ class WeatherView {
 		</form>
 	</div>
 </div>
+";
 
-		";
+	public function showStartPage() {
+		return $this->startPageFoundation;
+	}
 
-		return $ret;
+	public function showStartPageNoMatch() {
+
+		$page = $this->startPageFoundation;
+
+		$page .= "<div>Din sökning matchade inget resultat.</div>";
+
+		return $page;
+	}
+
+	public function showStartPageMultipleResults() {
+		return "multipleresults";
+	}
+
+	public function showStartPageWeatherReport($weatherReport) {
+
+		$page = $this->startPageFoundation;
+
+		foreach ($weatherReport->dayItems as $key => $day) {
+			$page .= "<div>" . $day->time . " " . $day->symbolName . "</div>";
+		}
+
+		return $page;
 	}
 
 public function getPostedQuery() {

@@ -14,7 +14,7 @@ class WeatherController {
 	private $weatherModel;
 
 	public function __construct() {
-		//$this->trafficModel = new TrafficModel();
+		$this->weatherModel = new WeatherModel();
 		$this->weatherView = new WeatherView($this->weatherModel);
 	}
 
@@ -31,24 +31,17 @@ class WeatherController {
 					
 					if(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)>1) {
 
-
-						return $this->weatherView->showStartPageMultipleResults($this->weatherModel->retrievedCities);
+						return $this->weatherView->showStartPageMultipleResults($this->weatherModel->weatherApiHandler->retrievedCities);
 					
-					} elseif(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)<1) {
-					
+					} elseif(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)<1) {					
 
 						return $this->weatherView->showStartPageNoMatch();
 					
 					} else {
 
-						//Sök upp väderdata
-
-
-						return $this->weatherView->showStartPageResult($this->weatherModel->weatherApiHandler->weatherReport);
+						return $this->weatherView->showStartPageWeatherReport($this->weatherModel->weatherApiHandler->weatherReport);
 					}
-
 					
-					return $this->weatherView->showStartPage($weatherData);
 					break;
 
 				default:
