@@ -22,8 +22,13 @@ class WeatherModel {
 	}
 
 	public function retrieveWeatherDataFromWeb($city) {
-		$cities = array(0 => $city); 
-		$this->weatherApiHandler->retrieveWeatherDataFromWeb($cities);
+
+		if($this->weatherApiHandler->shouldWeUseCache($city->geonameId)) {
+			$this->weatherApiHandler->getDataFromRepository($city->geonameId);
+		} else {
+			$cities = array(0 => $city); 
+			$this->weatherApiHandler->retrieveWeatherDataFromWeb($cities);
+		}
 	}
 
 	public function getLatestChosenCitySession($geonameId) {

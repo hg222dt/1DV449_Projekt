@@ -3,6 +3,7 @@
 require_once("WeatherReport.php");
 require_once("WeatherDay.php");
 require_once("City.php");
+require_once("AppDAL.php");
 require_once("myDummyXML.php");
 
 
@@ -14,6 +15,7 @@ class WeatherApiHandler {
 	public $geonameIds;
 	public $retrievedCities;
 	public $dummyStrXML;
+	private $appDAL;
 
 
 	public function __construct() {
@@ -22,6 +24,7 @@ class WeatherApiHandler {
 		$this->geonameIds = array();
 		$myDummyXML = new myDummyXML();
 		$this->dummyStrXML = $myDummyXML->xml;
+		$this->appDAL = new AppDAL();
 
 
 		if(isset($_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID]) && !is_array($_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID])) {
@@ -48,67 +51,49 @@ class WeatherApiHandler {
 
 			if($this->shouldWeUseCache($geonameId)) {
 				//Använd cache och hämta från databasen
-				$data = $getDataFromRepository($geonameId);
+				$this->getDataFromRepository($geonameId);
 
 			} else {
-
-
 				//Hämta city-data från geonames med hjälp av geonameId
 				array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));
 				
 				//Hämta från webbservice
 				$this->retrieveWeatherDataFromWeb($this->retrievedCities);
 			}
-		} else {
+		} elseif(sizeof($geonameIds) > 1) {
 
 			//Hämta flera städer i foreach-loop
 			foreach ($geonameIds as $key => $geonameId) {
 				array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));
 			}
 
-		}
+		} 
 	}
 
-	public function shouldWeUseCache($city) {
+	public function shouldWeUseCache($geonameId) {
 		
-		//Check in repositry if sity exists, and if cache is expired or not.
-		return false;
+		//Check in repositry if city exists, and if cache is expired or not.
 
+		if($this->appDAL->shouldWeUseCache($geonameId, time())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function searchCityId($userInput) {
 		return $this->getGeonameId($userInput);
 	}
 
-/*
-	public function searchcity($userInput) {
 
-		$geonameId = $this->getGeonameId($userInput);
-
-//var_dump($geonameId);
-
-		//Flera städer matchar
-		if(is_array($geonameId)) {
-
-
-			foreach ($geonameId as $value) {
-				$city = $this->getHierarchyToCityObj((string)$value);
-				array_push($this->retrievedCities, $city);
-			}	
-		} 
-		//En stad matchar
-		elseif ($geonameId != null) {
-			array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));		
-			return $this->retrievedCities;
-		}
-	}
-*/
-
-
-	public function getDataFromRepository($city) {
+	public function getDataFromRepository($geonameId) {
 
 		//Hämta data från databasen baserat på uppgifter på city.
 
+		$city = $this->appDAL->retrieveCityRepository($geonameId);
+		$forecastDays = $this->appDAL->retrieveDaysRepository($city->cityId);
+
+		$this->weatherReport = new WeatherReport($forecastDays, $city);
 	}
 
 
@@ -253,7 +238,7 @@ class WeatherApiHandler {
 		$weatherDayItems = array();
 		
 		foreach ($yrXml->forecast->tabular->children() as $value) {
-			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period']));
+			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period'], null));
 		}
 
 		//Dra ut korrekta perioder

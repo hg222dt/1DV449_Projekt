@@ -9,6 +9,7 @@ class City {
 	public $provinceName;
 	public $toponymName;
 	public $muncipName;
+	public $cityId;
 
 	public function __construct($geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName) {
 
