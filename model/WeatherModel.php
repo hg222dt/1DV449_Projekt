@@ -31,6 +31,6 @@ class WeatherModel {
 	}
 
 	public function getLatestChosenCitySession($geonameId) {
-		return $_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID . '=' . $geonameId];
+		return $_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID][$geonameId];
 	}
 }

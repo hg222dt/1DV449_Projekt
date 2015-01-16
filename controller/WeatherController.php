@@ -44,8 +44,6 @@ class WeatherController {
 
 				case WeatherView::ACTION_USER_PICK_FROM_MULTIPLE:
 
-					//var_dump($this->weatherView->getRequestedId());
-
 					$this->weatherModel->retrieveWeatherDataFromWeb($this->weatherModel->getLatestChosenCitySession($this->weatherView->getRequestedId()));
 
 					return $this->weatherView->showStartPageWeatherReport($this->weatherModel->weatherApiHandler->weatherReport);

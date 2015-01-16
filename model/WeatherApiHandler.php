@@ -22,10 +22,19 @@ class WeatherApiHandler {
 		$this->geonameIds = array();
 		$myDummyXML = new myDummyXML();
 		$this->dummyStrXML = $myDummyXML->xml;
+
+
+		if(isset($_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID]) && !is_array($_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID])) {
+			$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID] = array();
+		}
+
 	}
 
 	//Gör försök att logga in åt användaren
 	public function retrieveWeatherData($userInput) {
+
+		//Nollställer sessions-arrayet som innehåller stadsdata
+		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID] = array();
 
 		//Sök stad enligt användarens sökord
 		$cityResult = $this->searchcity($userInput);
@@ -195,7 +204,7 @@ class WeatherApiHandler {
 
 		$city = new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName);
 		
-		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID . '=' . $city->geonameId]=$city;
+		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID][$city->geonameId] = $city;
 
 		return $city;
 	}

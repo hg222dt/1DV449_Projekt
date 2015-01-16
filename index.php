@@ -6,7 +6,6 @@
 
 	session_start();
 
-
 	$weatherController = new WeatherController();
 
 	$htmlBody = $weatherController->doControll();
