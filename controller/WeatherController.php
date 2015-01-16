@@ -39,7 +39,6 @@ class WeatherController {
 
 						return $this->weatherView->showStartPageWeatherReport($this->weatherModel->weatherApiHandler->weatherReport);
 					}
-					
 					break;
 
 				case WeatherView::ACTION_USER_PICK_FROM_MULTIPLE:

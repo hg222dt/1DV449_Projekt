@@ -36,23 +36,36 @@ class WeatherApiHandler {
 		//Nollställer sessions-arrayet som innehåller stadsdata
 		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID] = array();
 
-		//Sök stad enligt användarens sökord
-		$cityResult = $this->searchcity($userInput);
+		//Sök stad enligt användarens sökord. Få tillbaka id.
+		$geonameIds = $this->searchCityId($userInput);
 
 		//Om det bara gick att hitta en stad på sökordet - Skapa väderrapport på det.
-		if(sizeof($cityResult) == 1) {
+		if(sizeof($geonameIds) == 1) {
+
+			$geonameId = $geonameIds[0];
 
 			//Skapa väderrapport
 
-			if($this->shouldWeUseCache($cityResult)) {
+			if($this->shouldWeUseCache($geonameId)) {
 				//Använd cache och hämta från databasen
-				$data = $getDataFromRepository($cityResult);
+				$data = $getDataFromRepository($geonameId);
 
 			} else {
 
+
+				//Hämta city-data från geonames med hjälp av geonameId
+				array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));
+				
 				//Hämta från webbservice
-				$this->retrieveWeatherDataFromWeb($cityResult);
+				$this->retrieveWeatherDataFromWeb($this->retrievedCities);
 			}
+		} else {
+
+			//Hämta flera städer i foreach-loop
+			foreach ($geonameIds as $key => $geonameId) {
+				array_push($this->retrievedCities, $this->getHierarchyToCityObj($geonameId));
+			}
+
 		}
 	}
 
@@ -63,6 +76,11 @@ class WeatherApiHandler {
 
 	}
 
+	public function searchCityId($userInput) {
+		return $this->getGeonameId($userInput);
+	}
+
+/*
 	public function searchcity($userInput) {
 
 		$geonameId = $this->getGeonameId($userInput);
@@ -84,6 +102,7 @@ class WeatherApiHandler {
 			return $this->retrievedCities;
 		}
 	}
+*/
 
 
 	public function getDataFromRepository($city) {
@@ -95,7 +114,7 @@ class WeatherApiHandler {
 
 	public function getGeonameId($userInput) {
 
-		$getGeonameIdUrl = "http://api.geonames.org/search?name_equals=" . $userInput . "&maxRows=20&username=henkenet&featureClass=P";
+		$getGeonameIdUrl = "http://api.geonames.org/search?name_equals=" . str_replace(" ", "%20", $userInput) . "&maxRows=20&username=henkenet&featureClass=P";
 		$textSearchData = $this->curlGetRequest($getGeonameIdUrl);
 
 		$textSearchData = simplexml_load_string($textSearchData) or die("Error: Cannot create object");
@@ -122,7 +141,7 @@ class WeatherApiHandler {
 		//Om bara en stad matchar. Skicka till baka det första elementet ut geoname-arrayet.
 		elseif (sizeof($geonameIds) == 1){
 		
-			return $geonameIds[0];
+			return $geonameIds;
 		} 
 		//Om inget har matchat. Returnera bara null.
 		else {
@@ -157,7 +176,7 @@ class WeatherApiHandler {
 		};
 
 		//Vi har hittat ett sökresultat med en stad
-		$getHierarchyUrl = "http://api.geonames.org/hierarchy?geonameId=" . $geonameId . "&username=henkenet";
+		$getHierarchyUrl = "http://api.geonames.org/hierarchy?geonameId=" . str_replace(" ", "%20", $geonameId) . "&username=henkenet";
 
 		$data = $this->curlGetRequest($getHierarchyUrl);
 
