@@ -24,10 +24,8 @@ class WeatherController {
 			switch($this->weatherView->getUserAction()) {
 
 				case WeatherView::ACTION_USER_STANDARD_SEARCH:
-
-					$userInput = $this->weatherView->getPostedQuery();
 					
-					$this->weatherModel->retrieveWeatherData($userInput);
+					$this->weatherModel->retrieveWeatherData($this->weatherView->getPostedQuery());
 					
 					if(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)>1) {
 
@@ -44,14 +42,20 @@ class WeatherController {
 					
 					break;
 
+				case WeatherView::ACTION_USER_PICK_FROM_MULTIPLE:
+
+					//var_dump($this->weatherView->getRequestedId());
+
+					$this->weatherModel->retrieveWeatherDataFromWeb($this->weatherModel->getLatestChosenCitySession($this->weatherView->getRequestedId()));
+
+					return $this->weatherView->showStartPageWeatherReport($this->weatherModel->weatherApiHandler->weatherReport);
+					break;
+
 				default:
+
 					return $this->weatherView->showStartPage();
 					break;
 
-				case WeatherView::ACTION_USER_CHOSE_ALTERNATIVE:
-
-
-					break;
 			}	
 		} catch (Exception $e) {
 			return WeatherView::MESSAGE_ERROR_FATAL;

@@ -8,13 +8,15 @@ class City {
 	public $countryName;
 	public $provinceName;
 	public $toponymName;
+	public $muncipName;
 
-	public function __construct($geonameId, $cityName, $toponymName, $provinceName, $countryName) {
+	public function __construct($geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName) {
 
 		$this->geonameId = $geonameId;
 		$this->cityName = $cityName;
 		$this->toponymName = $toponymName;
 		$this->provinceName = $provinceName;
 		$this->countryName = $countryName;
+		$this->muncipName = $muncipName;
 	}
 }

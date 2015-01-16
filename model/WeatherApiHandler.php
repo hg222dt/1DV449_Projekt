@@ -8,6 +8,8 @@ require_once("myDummyXML.php");
 
 class WeatherApiHandler {
 	
+	const SESSION_KEY_CITY_GEONAME_ID = "cityGeonameId";
+
 	public $weatherReport;
 	public $geonameIds;
 	public $retrievedCities;
@@ -40,9 +42,18 @@ class WeatherApiHandler {
 			} else {
 
 				//Hämta från webbservice
-				$this->weatherReport = $this->retrieveWeatherDataFromWeb($cityResult);
+				$this->retrieveWeatherDataFromWeb($cityResult);
 			}
 		}
+	}
+
+	public function retrieveWeatherFromGeonameId($geonameId) {
+
+		$cities = array();
+
+		$cities[0] = $this->getHierarchyToCityObj($geonameId);
+
+		$this->retrieveWeatherDataFromWeb($cities);
 	}
 
 	public function shouldWeUseCache($city) {
@@ -63,12 +74,9 @@ class WeatherApiHandler {
 
 
 			foreach ($geonameId as $value) {
-
 				$city = $this->getHierarchyToCityObj((string)$value);
 				array_push($this->retrievedCities, $city);
-				
 			}	
-
 		} 
 		//En stad matchar
 		elseif ($geonameId != null) {
@@ -170,10 +178,14 @@ class WeatherApiHandler {
 
 		if($muncipObj != null && property_exists($muncipObj, 'name')){
 			$muncipName = (string) $muncipObj->name;	
+		} else {
+			$muncipName = null;
 		}
 
 		if($provinceObj != null && property_exists($provinceObj, 'name')){
 			$provinceName = (string) $provinceObj->name;
+		} else {
+			$provinceName = null;
 		}
 
 		if($countryObj != null && property_exists($countryObj, 'name')){
@@ -181,15 +193,17 @@ class WeatherApiHandler {
 		}
 
 
-		$city = new City((string)$geonameId, $cityName, $toponymName, $provinceName, $countryName);
+		$city = new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName);
+		
+		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID . '=' . $city->geonameId]=$city;
 
 		return $city;
 	}
 
 
-	public function retrieveWeatherDataFromWeb($city) {
+	public function retrieveWeatherDataFromWeb($cities) {
 
-		$city = $city[0];
+		$city = $cities[0];
 
 		$getCorrectPeriod = function($value) {
 			if($value->period == "2") {
@@ -209,8 +223,8 @@ class WeatherApiHandler {
 
 		//Get data from Yr.no api
 
+		$getYrDataUrl = "http://www.yr.no/place/" . str_replace(" ", "%20", $city->countryName) . "/" . str_replace(" ", "%20", $city->provinceName) . "/" . str_replace(" ", "%20", $city->cityName) . "/forecast.xml";
 
-		$getYrDataUrl = "http://www.yr.no/place/" . $city->countryName . "/" . $city->provinceName . "/" . $city->cityName . "/forecast.xml";
 		$weatherData = $this->curlGetRequest($getYrDataUrl);
 
 		$yrXml = simplexml_load_string($weatherData) or die("Error: Cannot create object");
@@ -218,7 +232,6 @@ class WeatherApiHandler {
 //		$yrXml=simplexml_load_string($this->dummyStrXML);
 
 		$weatherDayItems = array();
-
 		
 		foreach ($yrXml->forecast->tabular->children() as $value) {
 			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period']));
@@ -231,7 +244,7 @@ class WeatherApiHandler {
 
 		$weatherDaysSliced = array_slice($weatherDays, 0, 5, true);
 
-		return new WeatherReport($weatherDays, $city);
+		$this->weatherReport = new WeatherReport($weatherDaysSliced, $city);
 	}
 
 

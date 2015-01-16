@@ -11,7 +11,7 @@ class WeatherView {
 
 	//Konstanter för användar-actions
 	const ACTION_USER_STANDARD_SEARCH = "citySearch";
-	const ACTION_USER_CHOSE_ALTERNATIVE = "userChoseAlternative";
+	const ACTION_USER_PICK_FROM_MULTIPLE = "userPickFromMultiple";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
@@ -28,6 +28,10 @@ class WeatherView {
 
 			case Self::ACTION_USER_STANDARD_SEARCH:
 				return Self::ACTION_USER_STANDARD_SEARCH;
+				break;
+
+			case Self::ACTION_USER_PICK_FROM_MULTIPLE:
+				return Self::ACTION_USER_PICK_FROM_MULTIPLE;
 				break;
 		}
 	}
@@ -59,8 +63,17 @@ class WeatherView {
 		return $page;
 	}
 
-	public function showStartPageMultipleResults() {
-		return "multipleresults";
+	public function showStartPageMultipleResults($retrievedCities) {
+
+		$page = $this->startPageFoundation;
+
+		$page .= "Multiple cities matched your search!";
+
+		foreach ($retrievedCities as $city) {
+			$page .="<div><a href='?userPickFromMultiple=$city->geonameId'>" . $city->toponymName . " " . $city->muncipName . " " . $city->provinceName . "</a></div>";
+		}
+
+		return $page;
 	}
 
 	public function showStartPageWeatherReport($weatherReport) {
@@ -74,9 +87,16 @@ class WeatherView {
 		return $page;
 	}
 
-public function getPostedQuery() {
+	public function getPostedQuery() {
 
 		return $_POST['searchQueryCity'];
+	}
+
+	public function getRequestedId() {
+		$url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    	$parts = parse_url($url);
+    	parse_str($parts['query'], $query);
+    	return $query['userPickFromMultiple'];
 	}
 
 }
