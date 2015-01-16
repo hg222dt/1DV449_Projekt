@@ -56,15 +56,6 @@ class WeatherApiHandler {
 		}
 	}
 
-	public function retrieveWeatherFromGeonameId($geonameId) {
-
-		$cities = array();
-
-		$cities[0] = $this->getHierarchyToCityObj($geonameId);
-
-		$this->retrieveWeatherDataFromWeb($cities);
-	}
-
 	public function shouldWeUseCache($city) {
 		
 		//Check in repositry if sity exists, and if cache is expired or not.
