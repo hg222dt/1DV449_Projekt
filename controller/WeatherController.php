@@ -25,20 +25,94 @@ class WeatherController {
 
 				case WeatherView::ACTION_USER_STANDARD_SEARCH:
 					
-					$this->weatherModel->retrieveWeatherData($this->weatherView->getPostedQuery());
-					
-					if(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)>1) {
+					//Check cityId
+					$cityIdArray = $this->weatherModel->weatherApiHandler->searchCityId($this->weatherView->getPostedQuery());
+						//If cityIdArray = null - noo result found.
 
-						return $this->weatherView->showStartPageMultipleResults($this->weatherModel->weatherApiHandler->retrievedCities);
-					
-					} elseif(sizeof($this->weatherModel->weatherApiHandler->retrievedCities)<1) {					
+					//Checkif use cache or not
 
-						return $this->weatherView->showStartPageNoMatch();
-					
-					} else {
+					$cityDataArray = array();
 
-						return $this->weatherView->showStartPageWeatherReport($this->weatherModel->weatherApiHandler->weatherReport);
+					foreach ($cityIdArray as $key => $geonameId) {
+						//try get cityData from repository. Returns null if city sere not found in repository.
+						$city = $this->weatherModel->weatherApiHandler->tryGetCityDataFromRepository($geonameId);
+						
+						//if not possible get from Web
+						if($city == null) {
+//							var_dump("get city from webb");
+							$city = $this->weatherModel->weatherApiHandler->getHierarchyToCityObj($geonameId);
+						} else {
+//							var_dump("city found in repository");
+							$city->existsOnDatabse = true;
+						}
+
+						array_push($cityDataArray, $city);
+						//Spara till sessionen.
 					}
+
+					$cityAmount = count($cityDataArray);
+
+
+					if($cityAmount>1) {
+						//Visa flervals alternativ
+						return $this->weatherView->showStartPageMultipleResults($cityDataArray);
+
+					} elseif($cityAmount == 1) {
+
+						$weatherReport;
+
+						//Kolla om stad finns på databasen eller inte.
+						if($cityDataArray[0]->existsOnDatabse == true) {
+
+							//Ska vi använda cachad data på databasen.
+							if($cityDataArray[0]->nextUpdate > time()) {
+								//Använd cache. Hämta väderrapporten från databasen. Visa den som resultat.
+//								var_dump("Use cache");
+
+								$weatherReport = $this->weatherModel->weatherApiHandler->getWeatherDaysFromRepository($cityDataArray[0]);
+
+
+
+							
+							} else {
+//								var_dump("Dont use cache");
+
+								//Ladda ner nytt från webben.
+								//Ta bort tidigare poster på forecastday
+								//Ändra nexupdate i databasen på City
+								//Lägg till nya nerladdade
+								//visa resultat i form av väderrapporten
+
+								$weatherReport = $this->weatherModel->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
+
+								$weatherReport->city->nextUpdate = time() + 20;
+
+								$this->weatherModel->weatherApiHandler->updateOldWeatherReportFromRepository($cityDataArray[0], $weatherReport);
+
+
+							}
+
+						} else {
+//							var_dump("Dont use cache");
+
+							//Ladda ner nytt från webben.
+							//Lägg till stad. Få CityId i return.
+							//Lägg till nya poster på databasen. 
+
+							$weatherReport = $this->weatherModel->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
+							$cityId = $this->weatherModel->weatherApiHandler->saveCityToRepository($weatherReport->city);
+
+							$weatherReport->city->cityId = $cityId;
+
+							$this->weatherModel->weatherApiHandler->saveDaysToRepository($weatherReport);
+						}
+
+						return $this->weatherView->showStartPageWeatherReport($weatherReport);
+
+					} else {
+						return $this->weatherView->showStartPageNoMatch();
+					}
+					
 					break;
 
 				case WeatherView::ACTION_USER_PICK_FROM_MULTIPLE:

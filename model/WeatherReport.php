@@ -15,5 +15,4 @@ class WeatherReport {
 		$this->city = $city;
 		
 	}
-
 }

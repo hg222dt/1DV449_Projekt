@@ -72,8 +72,9 @@ class WeatherApiHandler {
 
 	public function shouldWeUseCache($geonameId) {
 		
-		//Check in repositry if city exists, and if cache is expired or not.
+		return false;
 
+		//Check in repositry if city exists, and if cache is expired or not.
 		if($this->appDAL->shouldWeUseCache($geonameId, time())) {
 			return true;
 		} else {
@@ -96,6 +97,22 @@ class WeatherApiHandler {
 		$this->weatherReport = new WeatherReport($forecastDays, $city);
 	}
 
+	public function getWeatherDaysFromRepository($city) {
+
+		//Hämta data från databasen baserat på uppgifter på city.
+		$forecastDays = $this->appDAL->retrieveDaysRepository($city->cityId);
+
+		//var_dump($forecastDays);
+
+
+		return new WeatherReport($forecastDays, $city);
+	}
+
+	public function tryGetCityDataFromRepository($geonameId) {
+		return $this->appDAL->retrieveCityRepository($geonameId);
+	}
+
+
 
 	public function getGeonameId($userInput) {
 
@@ -106,14 +123,16 @@ class WeatherApiHandler {
 
 		$geonameIds = array();
 
-		foreach($textSearchData->children() as $geonames) { 
+		//var_dump($textSearchData->geoname->children());
 
-			$id = (string)$geonames->geonameId;
+		foreach($textSearchData->geoname as $geonames) { 
+			
+			//var_dump((string)$geonames->geonameId);
 
-			if(strlen($id) != 0) {
-			    array_push($geonameIds, $geonames->geonameId);
+			if(strlen($geonames) != 0) {
+			    array_push($geonameIds, (string)$geonames->geonameId);
 			}
-		} 
+		}
 
 		//Om flera id har hittats. Returnera sätt till publict fält. Och returnera array med alla id.
 		if(sizeof($geonameIds) > 1) {
@@ -181,7 +200,7 @@ class WeatherApiHandler {
 		}
 
 		if($muncipObj != null && property_exists($muncipObj, 'name')){
-			$muncipName = (string) $muncipObj->name;	
+			$muncipName = (string) $muncipObj->name;
 		} else {
 			$muncipName = null;
 		}
@@ -197,11 +216,36 @@ class WeatherApiHandler {
 		}
 
 
-		$city = new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName);
+		$city = new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, null);
 		
 		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID][$city->geonameId] = $city;
 
 		return $city;
+	}
+
+	public function saveDaysToRepository($weatherReport) {
+
+		$this->appDAL->saveToRepository($weatherReport);
+
+	}
+
+
+
+	public function updateOldWeatherReportFromRepository($city, $weatherReport) {
+
+		$this->appDAL->deleteOldWeatherReportFromRepository($city->cityId);
+
+		$this->appDAL->updateNextUpdate($city);
+		
+		$this->saveDaysToRepository($weatherReport);
+
+	}
+
+	public function saveCityToRepository($city) {
+
+		$cityId = $this->appDAL->saveCityToRepository($city);
+
+		return $cityId;
 	}
 
 
@@ -249,6 +293,10 @@ class WeatherApiHandler {
 		$weatherDaysSliced = array_slice($weatherDays, 0, 5, true);
 
 		$this->weatherReport = new WeatherReport($weatherDaysSliced, $city);
+
+		//$this->saveToRepository($this->weatherReport);
+
+		return $this->weatherReport;
 	}
 
 

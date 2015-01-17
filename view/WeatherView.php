@@ -78,9 +78,16 @@ class WeatherView {
 
 	public function showStartPageWeatherReport($weatherReport) {
 
+		//var_dump($weatherReport);
+
+
+		$dayItems = $weatherReport->dayItems;
+		//var_dump($dayItems);
+
 		$page = $this->startPageFoundation;
 
-		foreach ($weatherReport->dayItems as $key => $day) {
+		foreach ($dayItems as $key => $day) {
+			//var_dump($day);
 			$page .= "<div>" . $day->time . " " . $day->symbolName . "</div>";
 		}
 
