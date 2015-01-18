@@ -6,30 +6,9 @@ class RepositoryDAL {
 
 		$geonameId = (int) $geonameId;
 
-		$db = null;
-
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOEception $e) {
-			die("Del -> " .$e->getMessage());
-		}
-
 		$q = "SELECT * FROM City WHERE GeonameId = " . $geonameId;
 
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query: " .$e->getMessage());
-			return false;
-		}
-
+		$result = $this->makeDatabaseRequest($q);
 		
 		if(isset($result[0])) {
 			$result = $result[0];
@@ -40,37 +19,15 @@ class RepositoryDAL {
 		} else {
 			return null;
 		}
-
 	}
 
 	public function retrieveDaysRepository($cityId) {
 
 		$cityId = (int)$cityId;
 
-		$db = null;
-
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOException $e) {
-			die("Del -> " .$e->getMessage());
-		}
-
 		$q = "SELECT * FROM ForecastDay WHERE CityId = " . $cityId;
 
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query: " .$e->getMessage());
-			return false;
-		}
-
+		$result = $this->makeDatabaseRequest($q);
 
 		$dayItems = array();
 
@@ -86,8 +43,6 @@ class RepositoryDAL {
 
 		$cityId = $weatherReport->city->cityId;
 
-		//var_dump($cityId);
-
 		foreach ($weatherReport->dayItems as $key => $weatherDay) {
 
 			$date = (int)$weatherDay->time;
@@ -96,89 +51,24 @@ class RepositoryDAL {
 			$period = (int)$weatherDay->period;
 			$symbolVar = $weatherDay->symbolVar;
 
-			//var_dump($date, $symbolName, $temperature, $period, $symbolVar, $cityId);
-
-			$db = null;
-			
-			try {
-				$db = new PDO("sqlite:database.db");
-				$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			}
-			catch(PDOEception $e) {
-				die("Something went wrong -> " .$e->getMessage());
-			}
-			
 			$q = "INSERT INTO ForecastDay (CityId, DateFrom, SymbolName, SymbolVar, TemperatureValue, Period) VALUES ($cityId, $date, '$symbolName', '$symbolVar', '$temperature', $period)";
 
-			$result;
-			$stm;
-			try {
-				$stm = $db->prepare($q);
-				$stm->execute();
-				$result = $stm->fetchAll();
-			}
-			catch(PDOException $e) {
-				echo("Error creating query3: " .$e->getMessage());
-				return false;
-			}
+			$result = $this->makeDatabaseRequest($q);
 		}
 	}
 
 	public function deleteOldWeatherReportFromRepository($cityId) {
-		$db = null;
-
-		$cityId = (int)$cityId;
-			
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOEception $e) {
-			die("Something went wrong -> " .$e->getMessage());
-		}
 
 		$q = "DELETE FROM ForecastDay WHERE CityId =" . $cityId;
 
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query: " .$e->getMessage());
-			return false;
-		}
+		$result = $this->makeDatabaseRequest($q);
 	}
 
 	public function updateNextUpdate($city) {
-		$db = null;
-
-		$nextUpdate = (int)$city->nextUpdate;
-		$cityId = (int)$city->cityId;
-			
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOEception $e) {
-			die("Something went wrong -> " .$e->getMessage());
-		}
 
 		$q = "UPDATE City SET NextUpdate = $nextUpdate WHERE CityId = " . $cityId;
 
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query4: " .$e->getMessage());
-			return false;
-		}
+		$result = $this->makeDatabaseRequest($q);
 	}
 
 	public function saveCityToRepository($city) {
@@ -234,6 +124,28 @@ class RepositoryDAL {
 		return $cityId;
 	}
 
+	public function makeDatabaseRequest($q) {
+
+		try {
+			$db = new PDO("sqlite:database.db");
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOEception $e) {
+			die("Del -> " .$e->getMessage());
+		}
+
+		$result;
+		$stm;
+		try {
+			$stm = $db->prepare($q);
+			$stm->execute();
+			$result = $stm->fetchAll();
+		}
+		catch(PDOException $e) {
+			echo("Error creating query: " .$e->getMessage());
+			return false;
+		}
+	}
 }
 
 
