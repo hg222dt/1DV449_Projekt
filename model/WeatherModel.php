@@ -17,15 +17,20 @@ class WeatherModel {
 
 	}
 
+
+	//Returns City data on rsult of users query. Multiple cities if needed.
 	public function checkCityResultFromQuery($userQuery) {
 		//Check cityId
 		$cityIdArray = $this->weatherApiHandler->searchCityId($userQuery);
 
-		//Checkif use cache or not
-
 		$cityDataArray = array();
 
+
 		//LÄGG TILL KOLL SÅ ATT APIET HAR LADDAT NER NÅGOT HÄR.
+
+		if(isset($_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID]) && !is_array($_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID])) {
+			$_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID] = array();
+		}
 
 		foreach ($cityIdArray as $key => $geonameId) {
 			//try get cityData from repository. Returns null if city sere not found in repository.
@@ -33,14 +38,16 @@ class WeatherModel {
 			
 			//if not possible get from Web
 			if($city == null) {
-//				var_dump("get city from webb");
 				$city = $this->weatherApiHandler->getHierarchyToCityObj($geonameId);
+//				var_dump("get city from webb: " . $city->provinceName);
 			} else {
-//				var_dump("city found in repository");
 				$city->existsOnDatabse = true;
+//				var_dump("city found in repository: " . $city->provinceName);
 			}
 
 			array_push($cityDataArray, $city);
+
+			$_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID][$city->geonameId] = $city;
 		}
 
 		return $cityDataArray;

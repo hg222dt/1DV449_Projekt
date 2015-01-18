@@ -9,16 +9,18 @@ class RepositoryDAL {
 		$q = "SELECT * FROM City WHERE GeonameId = " . $geonameId;
 
 		$result = $this->makeDatabaseRequest($q);
-		
+
 		if(isset($result[0])) {
 			$result = $result[0];
 		
 			$city = new City($result['GeonameId'], $result['Name'], $result['ToponymName'], $result['MunicipName'], $result['ProvinceName'], $result['CountryName'], $result['NextUpdate']);
 			$city->cityId = $result['CityId'];
 			return $city;
+		
 		} else {
 			return null;
 		}
+		
 	}
 
 	public function retrieveDaysRepository($cityId) {
@@ -126,6 +128,8 @@ class RepositoryDAL {
 
 	public function makeDatabaseRequest($q) {
 
+		$db = null;
+
 		try {
 			$db = new PDO("sqlite:database.db");
 			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -145,6 +149,8 @@ class RepositoryDAL {
 			echo("Error creating query: " .$e->getMessage());
 			return false;
 		}
+
+		return $result;
 	}
 }
 

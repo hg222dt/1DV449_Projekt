@@ -3,7 +3,7 @@
 require_once("WeatherReport.php");
 require_once("WeatherDay.php");
 require_once("City.php");
-require_once("AppDAL.php");
+require_once("RepositoryDAL.php");
 require_once("WebserviceDAL.php");
 require_once("myDummyXML.php");
 
@@ -22,11 +22,6 @@ class WeatherApiHandler {
 		$this->dummyStrXML = $myDummyXML->xml;
 		$this->repositoryDAL = new RepositoryDAL();
 		$this->webserviceDAL = new WebserviceDAL();
-
-
-		if(isset($_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID]) && !is_array($_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID])) {
-			$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID] = array();
-		}
 
 	}
 
@@ -56,8 +51,6 @@ class WeatherApiHandler {
 	public function getHierarchyToCityObj($geonameId) {
 
 		$city = $this->webserviceDAL->getFullCityDataWeb($geonameId);
-		
-		$_SESSION[Self::SESSION_KEY_CITY_GEONAME_ID][$city->geonameId] = $city;
 
 		return $city;
 	}
