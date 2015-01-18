@@ -132,14 +132,15 @@ class AppDAL {
 
 		$cityId = $weatherReport->city->cityId;
 
+		//var_dump($cityId);
+
 		foreach ($weatherReport->dayItems as $key => $weatherDay) {
 
 			$date = (int)$weatherDay->time;
 			$symbolName = $weatherDay->symbolName;
 			$temperature = $weatherDay->temperature;
 			$period = (int)$weatherDay->period;
-			//$symbolVar = $weatherDay->symbolVar;
-			$symbolVar = "ief";
+			$symbolVar = $weatherDay->symbolVar;
 
 			//var_dump($date, $symbolName, $temperature, $period, $symbolVar, $cityId);
 
@@ -221,14 +222,14 @@ class AppDAL {
 			$result = $stm->fetchAll();
 		}
 		catch(PDOException $e) {
-			echo("Error creating query: " .$e->getMessage());
+			echo("Error creating query4: " .$e->getMessage());
 			return false;
 		}
 	}
 
 	public function saveCityToRepository($city) {
 
-		$nextUpdate = time() + 20;
+		$nextUpdate = $city->nextUpdate;
 		$geonameId = (int) $city->geonameId;
 		$cityName = $city->cityName;
 		$countryName = $city->countryName;
@@ -256,7 +257,7 @@ class AppDAL {
 			$result = $stm->fetchAll();
 		}
 		catch(PDOException $e) {
-			echo("Error creating query: " .$e->getMessage());
+			echo("Error creating query6: " .$e->getMessage());
 			return false;
 		}
 

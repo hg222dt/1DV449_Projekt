@@ -279,10 +279,16 @@ class WeatherApiHandler {
 
 //		$yrXml=simplexml_load_string($this->dummyStrXML);
 
+		$nextUpdateItem = strtotime((string)$yrXml->meta->nextupdate);
+
+		$city->nextUpdate = $nextUpdateItem;
+
+		//var_dump(strtotime((string)$nextUpdateItem));
+
 		$weatherDayItems = array();
 		
 		foreach ($yrXml->forecast->tabular->children() as $value) {
-			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period'], null));
+			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period'], $value->symbol['var']));
 		}
 
 		//Dra ut korrekta perioder
@@ -294,7 +300,7 @@ class WeatherApiHandler {
 
 		$this->weatherReport = new WeatherReport($weatherDaysSliced, $city);
 
-		//$this->saveToRepository($this->weatherReport);
+
 
 		return $this->weatherReport;
 	}

@@ -33,6 +33,8 @@ class WeatherController {
 
 					$cityDataArray = array();
 
+					//LÄGG TILL KOLL SÅ ATT APIET HAR LADDAT NER NÅGOT HÄR.
+
 					foreach ($cityIdArray as $key => $geonameId) {
 						//try get cityData from repository. Returns null if city sere not found in repository.
 						$city = $this->weatherModel->weatherApiHandler->tryGetCityDataFromRepository($geonameId);
@@ -85,7 +87,7 @@ class WeatherController {
 
 								$weatherReport = $this->weatherModel->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
 
-								$weatherReport->city->nextUpdate = time() + 20;
+								//$weatherReport->city->nextUpdate = time() + 20;
 
 								$this->weatherModel->weatherApiHandler->updateOldWeatherReportFromRepository($cityDataArray[0], $weatherReport);
 
