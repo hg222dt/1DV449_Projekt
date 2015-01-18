@@ -17,7 +17,6 @@ class WeatherModel {
 
 	}
 
-
 	//Returns City data on rsult of users query. Multiple cities if needed.
 	public function checkCityResultFromQuery($userQuery) {
 		//Check cityId
@@ -68,35 +67,17 @@ class WeatherModel {
 //				var_dump("Use cache");
 
 				$weatherReport = $this->weatherApiHandler->getWeatherDaysFromRepository($cityDataArray[0]);
-
 			} else {
-//				var_dump("Dont use cache");
-
-				//Ladda ner nytt från webben.
-				//Ta bort tidigare poster på forecastday
-				//Ändra nexupdate i databasen på City
-				//Lägg till nya nerladdade
-				//visa resultat i form av väderrapporten
-
 				$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
-
-				//$weatherReport->city->nextUpdate = time() + 20;
-
 				$this->weatherApiHandler->updateOldWeatherReportFromRepository($cityDataArray[0], $weatherReport);
 			}
 
 		} else {
 //			var_dump("Dont use cache");
 
-			//Ladda ner nytt från webben.
-			//Lägg till stad. Få CityId i return.
-			//Lägg till nya poster på databasen. 
-
 			$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
 			$cityId = $this->weatherApiHandler->saveCityToRepository($weatherReport->city);
-
 			$weatherReport->city->cityId = $cityId;
-
 			$this->weatherApiHandler->saveDaysToRepository($weatherReport);
 		}
 

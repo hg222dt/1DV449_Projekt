@@ -36,7 +36,9 @@ class WeatherView {
 		}
 	}
 
-	public $startPageFoundation = "
+	public function getPageFoundation($textData) {
+
+		$startPageChunk = "
 <div class='row'>
 	<div id='meny'>
 		<h1>VäderKAOS!</h1>
@@ -48,50 +50,48 @@ class WeatherView {
 		</form>
 	</div>
 </div>
-";
+$textData
+		";
+
+		return $startPageChunk;
+
+	}
 
 	public function showStartPage() {
-		return $this->startPageFoundation;
+		return $this->getPageFoundation("");
 	}
 
 	public function showStartPageNoMatch() {
 
-		$page = $this->startPageFoundation;
+		$markup = "<div>Din sökning matchade inget resultat.</div>";
 
-		$page .= "<div>Din sökning matchade inget resultat.</div>";
-
-		return $page;
+		return $this->getPageFoundation($markup);
 	}
 
 	public function showStartPageMultipleResults($retrievedCities) {
 
-		$page = $this->startPageFoundation;
-
-		$page .= "Multiple cities matched your search!";
+		$markup = "<div>Multiple cities matched your search!</div>";
 
 		foreach ($retrievedCities as $city) {
-			$page .="<div><a href='?userPickFromMultiple=$city->geonameId'>" . $city->toponymName . " " . $city->muncipName . " " . $city->provinceName . "</a></div>";
+			$markup .="<div><a href='?userPickFromMultiple=$city->geonameId'>" . $city->toponymName . " " . $city->muncipName . " " . $city->provinceName . "</a></div>";
 		}
 
-		return $page;
+		return $this->getPageFoundation($markup);
 	}
 
 	public function showStartPageWeatherReport($weatherReport) {
 
-		//var_dump($weatherReport);
-
-
 		$dayItems = $weatherReport->dayItems;
-		//var_dump($dayItems);
 
-		$page = $this->startPageFoundation;
+		
+		$markup = "<div>Here you go!</div>";
 
 		foreach ($dayItems as $key => $day) {
-			//var_dump($day);
-			$page .= "<div>" . $day->time . " " . $day->symbolName . "</div>";
+			$markup .= "<div>" . $day->time . " " . $day->symbolName . " " . $day->temperature . "</div>";
 		}
 
-		return $page;
+		return $this->getPageFoundation($markup);
+
 	}
 
 	public function getPostedQuery() {
