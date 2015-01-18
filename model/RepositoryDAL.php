@@ -68,6 +68,9 @@ class RepositoryDAL {
 
 	public function updateNextUpdate($city) {
 
+		$nextUpdate = (int)$city->nextUpdate;
+		$cityId = (int)$city->cityId;
+
 		$q = "UPDATE City SET NextUpdate = $nextUpdate WHERE CityId = " . $cityId;
 
 		$result = $this->makeDatabaseRequest($q);
