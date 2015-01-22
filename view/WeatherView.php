@@ -12,6 +12,7 @@ class WeatherView {
 	//Konstanter för användar-actions
 	const ACTION_USER_STANDARD_SEARCH = "citySearch";
 	const ACTION_USER_PICK_FROM_MULTIPLE = "userPickFromMultiple";
+	const ACTION_USER_GOTO_LOGON = "logOn";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
@@ -33,12 +34,17 @@ class WeatherView {
 			case WeatherView::ACTION_USER_PICK_FROM_MULTIPLE:
 				return WeatherView::ACTION_USER_PICK_FROM_MULTIPLE;
 				break;
+
+			case WeatherView::ACTION_USER_GOTO_LOGON:
+				return WeatherView::ACTION_USER_GOTO_LOGON;
+				break;
 		}
 	}
 
 	public function getPageFoundation($textData) {
 
 		$startPageChunk = "
+<a href='view/LogonView.html'>Logga in!</a>
 <div class='row'>
 	<div id='meny'>
 		<h1>VäderKAOS!!!</h1>
@@ -87,7 +93,8 @@ $textData
 		$markup = "<div>Here you go!</div>";
 
 		foreach ($dayItems as $key => $day) {
-			$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
+			//$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
+			$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='images/" . $day->symbolVar . ".png'></div>";
 		}
 
 		return $this->getPageFoundation($markup);

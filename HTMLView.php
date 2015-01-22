@@ -17,21 +17,28 @@ class HTMLView {
 		<html manifest='cache.manifest'>
 			<head>
 				<title>VadfanblirdetförväderPUNKTse</title>
-				<script src='https://apis.google.com/js/client:platform.js' async defer></script>
-				<script src = 'https://plus.google.com/js/client:plusone.js'></script>
 
+				<script>
+					function updateOnlineStatus(msg) {
+					  var status = document.getElementById('status');
+					  var condition = navigator.onLine ? 'ONLINE' : 'OFFLINE';
+					  status.setAttribute('class', condition);
+					  var state = document.getElementById('state');
+					  state.innerHTML = condition;
+					  var log = document.getElementById('log');
+					  
+					}
+					function loaded() {
+					  updateOnlineStatus('load');
+					  document.body.addEventListener('offline', function () { updateOnlineStatus('offline') }, false);
+					  document.body.addEventListener('online', function () { updateOnlineStatus('online') }, false);
+					}
+				</script>
 			</head>
 			<body>
-				<div id='gConnect' class='button'>
-				    <button class='g-signin'
-			          data-scope='email'
-			          data-clientid='1007777563828-qf7sfjkv028b4ir0e3sk6slc1kji3m9q.apps.googleusercontent.com'
-			          data-callback='onSignInCallback'
-			          data-theme='dark'
-			          data-cookiepolicy='single_host_origin'>
-			        </button>
-			    </div>
-
+				<div id='status'></div>
+				<div id='log'></div>
+				<div id='state'></div>
 				<div class='container' style='height:100%'>
 					$body
 				</div>
@@ -78,6 +85,8 @@ class HTMLView {
 				      // Manifest didn't changed. Nothing new to server.
 				    }
 				  }, false);
+
+					loaded();
 
 				}, false);
 			  </script>

@@ -2,6 +2,7 @@
 
 require_once("./view/WeatherView.php");
 require_once("./model/WeatherModel.php");
+require_once("./view/LogonView.php");
 
 /*
  * Controller-klass
@@ -12,10 +13,12 @@ class WeatherController {
 
 	private $weatherView;
 	private $weatherModel;
+	private $logonView;
 
 	public function __construct() {
 		$this->weatherModel = new WeatherModel();
 		$this->weatherView = new WeatherView($this->weatherModel);
+		$this->logonView = new LogonView();
 	}
 
 	public function doControll() {
@@ -55,6 +58,13 @@ class WeatherController {
 
 					return $this->weatherView->showStartPageWeatherReport($weatherReport);
 					break;
+
+				case WeatherView::ACTION_USER_GOTO_LOGON:
+
+					return $this->logonView->showLoginPage();
+
+					break;
+
 
 				default:
 
