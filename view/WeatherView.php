@@ -26,12 +26,12 @@ class WeatherView {
 		//Hämtar ut vilken användar-action som valts
 		switch(key($_GET)) {
 
-			case Self::ACTION_USER_STANDARD_SEARCH:
-				return Self::ACTION_USER_STANDARD_SEARCH;
+			case WeatherView::ACTION_USER_STANDARD_SEARCH:
+				return WeatherView::ACTION_USER_STANDARD_SEARCH;
 				break;
 
-			case Self::ACTION_USER_PICK_FROM_MULTIPLE:
-				return Self::ACTION_USER_PICK_FROM_MULTIPLE;
+			case WeatherView::ACTION_USER_PICK_FROM_MULTIPLE:
+				return WeatherView::ACTION_USER_PICK_FROM_MULTIPLE;
 				break;
 		}
 	}
@@ -41,7 +41,7 @@ class WeatherView {
 		$startPageChunk = "
 <div class='row'>
 	<div id='meny'>
-		<h1>VäderKAOS!</h1>
+		<h1>VäderKAOS!!!</h1>
 	</div>
 	<div>
 		<form action='?citySearch' method='POST'>
@@ -87,7 +87,7 @@ $textData
 		$markup = "<div>Here you go!</div>";
 
 		foreach ($dayItems as $key => $day) {
-			$markup .= "<div>" . $day->time . " " . $day->symbolName . " " . $day->temperature . "</div>";
+			$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
 		}
 
 		return $this->getPageFoundation($markup);

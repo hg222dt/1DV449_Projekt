@@ -5,21 +5,16 @@ require_once("WeatherDay.php");
 require_once("City.php");
 require_once("RepositoryDAL.php");
 require_once("WebserviceDAL.php");
-require_once("myDummyXML.php");
-
 
 class WeatherApiHandler {
 	
 	const SESSION_KEY_CITY_GEONAME_ID = "cityGeonameId";
 
-	public $dummyStrXML;
 	private $repositoryDAL;
 	private $webserviceDAL;
 
 	public function __construct() {
 
-		$myDummyXML = new myDummyXML();
-		$this->dummyStrXML = $myDummyXML->xml;
 		$this->repositoryDAL = new RepositoryDAL();
 		$this->webserviceDAL = new WebserviceDAL();
 

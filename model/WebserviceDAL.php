@@ -97,7 +97,7 @@ class WebserviceDAL {
 			$bTime = $b->time;
 
 			if ($aTime == $bTime) return 0;
-			   return ($aTime < $bTime) ? 1 : -1;
+			   return ($aTime < $bTime) ? -1 : 1;
 			
 		};
 
@@ -108,8 +108,6 @@ class WebserviceDAL {
 		$weatherData = $this->curlGetRequest($getYrDataUrl);
 
 		$yrXml = simplexml_load_string($weatherData) or die("Error: Cannot create object");
-
-//		$yrXml=simplexml_load_string($this->dummyStrXML);
 
 		$nextUpdateItem = strtotime((string)$yrXml->meta->nextupdate);
 
