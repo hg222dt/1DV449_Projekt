@@ -44,7 +44,7 @@ class WeatherView {
 	public function getPageFoundation($textData) {
 
 		$startPageChunk = "
-<a href='view/LogonView.html'>Logga in!</a>
+<a href='view/LogonView.html' id='loginLink'>Logga in!</a>
 <div class='row'>
 	<div id='meny'>
 		<h1>VäderKAOS!!!</h1>
@@ -52,7 +52,7 @@ class WeatherView {
 	<div>
 		<form action='?citySearch' method='POST'>
 			<input type='text' id='cityInput' name='searchQueryCity'>
-			<input type='submit' value='Sök'>
+			<input type='submit' value='Sök' id='submitButton'>
 		</form>
 	</div>
 </div>

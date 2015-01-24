@@ -20,14 +20,22 @@ class HTMLView {
 
 				<script>
 					function updateOnlineStatus(msg) {
+					  var offlineMessage = 'Ouups! Någon har klippt linan. Eftersom att du inte har internet kan vi inte göra sökningar åt sig för tillfället.';
 					  var status = document.getElementById('status');
+					  var submitButton = document.getElementById('submitButton');
+					  var cityInput = document.getElementById('cityInput');
+					  var loginLink = document.getElementById('loginLink');
 					  var condition = navigator.onLine ? 'ONLINE' : 'OFFLINE';
-					  status.setAttribute('class', condition);
-					  var state = document.getElementById('state');
-					  state.innerHTML = condition;
-					  var log = document.getElementById('log');
-					  
+
+					  if(condition === 'OFFLINE') {
+						  status.setAttribute('class', condition);
+						  status.innerHTML = offlineMessage;
+						  submitButton.setAttribute('disabled', true)
+						  cityInput.setAttribute('disabled', true);
+						  loginLink.remove();
+					  }
 					}
+
 					function loaded() {
 					  updateOnlineStatus('load');
 					  document.body.addEventListener('offline', function () { updateOnlineStatus('offline') }, false);
@@ -37,8 +45,6 @@ class HTMLView {
 			</head>
 			<body>
 				<div id='status'></div>
-				<div id='log'></div>
-				<div id='state'></div>
 				<div class='container' style='height:100%'>
 					$body
 				</div>
