@@ -6,15 +6,17 @@
  **/
 
  require_once("WeatherApiHandler.php");
+ require_once("UserDAL.php");
 
 class WeatherModel {
 
 
 	public $weatherApiHandler;
+	private $userDAL;
 
 	public function __construct() {
 		$this->weatherApiHandler = new WeatherApiHandler();
-
+		$this->userDAL = new UserDAL();
 	}
 
 	//Returns City data on rsult of users query. Multiple cities if needed.
@@ -82,6 +84,26 @@ class WeatherModel {
 		}
 
 		return $weatherReport;
+	}
+
+	public function logUserIn($loginParam) {
+
+		//Om inte användaren är registrerad på vår databas innan, så registrera.
+
+		$this->userDAL->logUserIn($loginParam);
+
+		$this->userDAL->getUserFavourites($loginParam);
+
+		$_SESSION['userLoggedIn'] = true;
+		$_SESSION['userLoggedInEmail'] = $loginParam;
+
+		return true;
+	}
+
+
+	public function logUserOutSession() {
+		$_SESSION['userLoggedIn'] = false;
+		$_SESSION['userLoggedInEmail'] = "";
 	}
 
 

@@ -14,9 +14,12 @@ class HTMLView {
 
 		echo "
 		<!DOCTYPE html>
-		<html manifest='cache.manifest'>
+		<html>
 			<head>
 				<title>VadfanblirdetförväderPUNKTse</title>
+
+				<link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
+				<link rel='stylesheet' type='text/css' href='./css/styles.css'>
 
 				<script>
 					function updateOnlineStatus(msg) {
@@ -46,7 +49,11 @@ class HTMLView {
 			<body>
 				<div id='status'></div>
 				<div class='container' style='height:100%'>
-					$body
+					<div class='col-sm-4'></div>
+						<div class='col-sm-4'>
+							$body
+						</div>
+					<div class='col-sm-4'></div>
 				</div>
 			</body>
 			<script type='text/javascript'>
@@ -96,6 +103,9 @@ class HTMLView {
 
 				}, false);
 			  </script>
+			  <script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+		      <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'></script>
+			  <!--<script src='scripts/script.js'></script>-->
 			</html>
 		";
 	}

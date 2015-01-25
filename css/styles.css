@@ -1,0 +1,16 @@
+.searchComponent {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.centerizedContent {
+	margin: 0 auto;
+}
+
+.weatherReportItem {
+	background-color:lightgray;
+	margin-bottom: 5px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+	padding-top: 10px;
+}

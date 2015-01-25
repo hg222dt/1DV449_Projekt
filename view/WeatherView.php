@@ -13,6 +13,8 @@ class WeatherView {
 	const ACTION_USER_STANDARD_SEARCH = "citySearch";
 	const ACTION_USER_PICK_FROM_MULTIPLE = "userPickFromMultiple";
 	const ACTION_USER_GOTO_LOGON = "logOn";
+	const ACTION_LOG_USER_IN = "logUserIn";
+	const ACTION_USER_LOG_OUT = "userLogOut";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
@@ -23,6 +25,8 @@ class WeatherView {
 	}
 
 	public function getUserAction() {
+
+		//var_dump(key($_GET));
 
 		//Hämtar ut vilken användar-action som valts
 		switch(key($_GET)) {
@@ -38,16 +42,27 @@ class WeatherView {
 			case WeatherView::ACTION_USER_GOTO_LOGON:
 				return WeatherView::ACTION_USER_GOTO_LOGON;
 				break;
+
+			case WeatherView::ACTION_LOG_USER_IN:
+				return WeatherView::ACTION_LOG_USER_IN;
+				break;
+
+			case WeatherView::ACTION_USER_LOG_OUT:
+				return WeatherView::ACTION_USER_LOG_OUT;
+				break;
 		}
 	}
 
 	public function getPageFoundation($textData) {
 
-		$startPageChunk = "
-<a href='view/LogonView.html' id='loginLink'>Logga in!</a>
-<div class='row'>
-	<div id='meny'>
-		<h1>VäderKAOS!!!</h1>
+		if($_SESSION['userLoggedIn']) {
+
+			$startPageChunk = "
+USER LOGGED IN
+<a href='?userLogOut' id='loginLink'>Logga ut!</a>
+<div class='centerizedContent'>
+	<div id='meny' class='centerizedContent'>
+		<h1>!!!</h1>
 	</div>
 	<div>
 		<form action='?citySearch' method='POST'>
@@ -59,12 +74,44 @@ class WeatherView {
 $textData
 		";
 
+		} else {
+
+		$startPageChunk = "
+<a href='view/LogonView.html' id='loginLink'>Logga in!</a>
+<div class='centerizedContent'>
+	<div id='meny' class='centerizedContent'>
+		<h1>!!!</h1>
+	</div>
+	<div>
+		<form action='?citySearch' method='POST'>
+			<input type='text' id='cityInput' name='searchQueryCity'>
+			<input type='submit' value='Sök' id='submitButton'>
+		</form>
+	</div>
+</div>
+$textData
+		";
+
+		}
+
 		return $startPageChunk;
 
 	}
 
 	public function showStartPage() {
 		return $this->getPageFoundation("");
+	}
+
+	public function showLoggedInStartPage($loginParam) {
+
+		$ret = $this->showStartPage();		
+
+		echo $loginParam;
+		return "LoggedInStartPage";
+	}
+
+	public function showCouldNotLoginPage() {
+		return "CouldNotLoginPage";
 	}
 
 	public function showStartPageNoMatch() {
@@ -94,7 +141,7 @@ $textData
 
 		foreach ($dayItems as $key => $day) {
 			//$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
-			$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='images/" . $day->symbolVar . ".png'></div>";
+			$markup .= "<div class='weatherReportItem'>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='./images/" . $day->symbolVar . ".png'></div>";
 		}
 
 		return $this->getPageFoundation($markup);
@@ -104,6 +151,10 @@ $textData
 	public function getPostedQuery() {
 
 		return $_POST['searchQueryCity'];
+	}
+
+	public function getLoginParam() {
+		return $_GET[key($_GET)];
 	}
 
 	public function getRequestedId() {

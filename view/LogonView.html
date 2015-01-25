@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-		<html manifest='cache.manifest'>
+		<html>
 			<head>
 				<title>VadfanblirdetförväderPUNKTse</title>
 				<script src='https://apis.google.com/js/client:platform.js' async defer></script>
@@ -46,8 +46,22 @@
 			    }
 
 			    console.log(primaryEmail);
+
+				window.location = "../index.php?logUserIn=" + primaryEmail;
+
+
+			    //När vi fått e-mail
+			    //Skicka till server och lägg på databas som inloggad användare
+			    //Redirecta användare till loggedInPage
+
+
+
+
 			  }
 
 			  </script>
+			  <script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+		      <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'></script>
+			  <!--<script src='scripts/script.js'></script>-->
 			  
 			</html>

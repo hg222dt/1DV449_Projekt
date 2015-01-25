@@ -19,6 +19,9 @@ class WeatherController {
 		$this->weatherModel = new WeatherModel();
 		$this->weatherView = new WeatherView($this->weatherModel);
 		$this->logonView = new LogonView();
+
+//		$_SESSION['userLoggedIn'] = false;
+//		$_SESSION['userLoggedInEmail'] = "";
 	}
 
 	public function doControll() {
@@ -62,9 +65,27 @@ class WeatherController {
 				case WeatherView::ACTION_USER_GOTO_LOGON:
 
 					return $this->logonView->showLoginPage();
-
 					break;
 
+				case WeatherView::ACTION_LOG_USER_IN:
+
+					$loginParam = $this->weatherView->getLoginParam();
+
+					$userLoggedIn = $this->weatherModel->logUserIn($loginParam);
+
+					if($userLoggedIn) {
+						return $this->weatherView->showStartPage();
+					}
+
+					return $this->weatherView->showCouldNotLoginPage();
+					break;
+
+				case WeatherView::ACTION_USER_LOG_OUT:
+
+					$this->weatherModel->logUserOutSession();
+
+					return $this->weatherView->showStartPage();
+					break;
 
 				default:
 
