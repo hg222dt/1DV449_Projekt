@@ -23,6 +23,7 @@ class RepositoryDAL {
 		
 	}
 
+
 	public function retrieveDaysRepository($cityId) {
 
 		$cityId = (int)$cityId;

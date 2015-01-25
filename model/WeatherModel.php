@@ -24,14 +24,19 @@ class WeatherModel {
 		//Check cityId
 		$cityIdArray = $this->weatherApiHandler->searchCityId($userQuery);
 
-		$cityDataArray = array();
-
 
 		//LÄGG TILL KOLL SÅ ATT APIET HAR LADDAT NER NÅGOT HÄR.
 
 		if(isset($_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID]) && !is_array($_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID])) {
 			$_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID] = array();
 		}
+
+		return $this->getCitiesFromGeonameIds($cityIdArray);
+	}
+
+	public function getCitiesFromGeonameIds($cityIdArray) {
+
+		$cityDataArray = array();
 
 		foreach ($cityIdArray as $key => $geonameId) {
 			//try get cityData from repository. Returns null if city sere not found in repository.
@@ -86,13 +91,43 @@ class WeatherModel {
 		return $weatherReport;
 	}
 
+	public function getFavourites($useremail) {
+
+		$geonameIds = $this->userDAL->getUserFavouriteIds($useremail);
+
+		$weatherReports = array();
+
+		$cityDataArray = array();
+
+		$cityDataArray = $this->getCitiesFromGeonameIds($geonameIds);
+
+		foreach ($cityDataArray as $key => $city) {
+
+			$cityArray = array();
+			$cityArray[0] = $city;
+
+			$weatherReport = $this->getSpecificCityWeather($cityArray);
+
+			array_push($weatherReports, $weatherReport);
+		}
+
+		return $weatherReports;
+	}
+
+	public function saveAsFavourite($cityId) {
+
+		$useremail = $_SESSION['userLoggedInEmail'];
+		$this->userDAL->saveAsFavourite($useremail, $cityId);
+
+	}
+
 	public function logUserIn($loginParam) {
 
 		//Om inte användaren är registrerad på vår databas innan, så registrera.
 
 		$this->userDAL->logUserIn($loginParam);
 
-		$this->userDAL->getUserFavourites($loginParam);
+		$this->userDAL->getUserFavouriteIds($loginParam);
 
 		$_SESSION['userLoggedIn'] = true;
 		$_SESSION['userLoggedInEmail'] = $loginParam;

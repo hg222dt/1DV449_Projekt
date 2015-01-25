@@ -78,14 +78,157 @@ class UserDAL {
 
 	}
 
-	public function getUserFavourites($loginParam) {
+	public function getUserIdFromEmail($useremail) {
+
+		$db = null;
+			
+		try {
+			$db = new PDO("sqlite:database.db");
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOEception $e) {
+			die("Something went wrong -> " .$e->getMessage());
+		}
+
+
+		$q = "SELECT * FROM User WHERE Email = '$useremail'";
+
+		$result;
+		$stm;
+		try {
+			$stm = $db->prepare($q);
+			$stm->execute();
+			$result = $stm->fetchAll();
+		}
+		catch(PDOException $e) {
+			echo("Error creating query5: " .$e->getMessage());
+			return false;
+		}
+
+		if(isset($result[0])) {
+			$userId = $result[0]['UserId'];
+		} 
+
+		return $userId;
+
+	}
+
+
+	public function saveAsFavourite($useremail, $geonameId) {
+
+		$userId = (int) $this->getUserIdFromEmail($useremail);
+
+		$geonameId = (int) $geonameId;
+
+		if(!$this->doesFavouriteExist($userId, $geonameId)) {
+
+			$db = null;
+				
+			try {
+				$db = new PDO("sqlite:database.db");
+				$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			}
+			catch(PDOEception $e) {
+				die("Something went wrong -> " .$e->getMessage());
+			}
+
+			$q = "INSERT INTO Favourites (GeonameId, UserId) VALUES ($geonameId ,$userId)";
+
+			$result;
+			$stm;
+			try {
+				$stm = $db->prepare($q);
+				$stm->execute();
+				$result = $stm->fetchAll();
+			}
+			catch(PDOException $e) {
+				echo("Error creating query6: " .$e->getMessage());
+				return false;
+			}
+
+		}
+	}
+
+
+	public function doesFavouriteExist($userId, $geonameId) {
+
+		try {
+			$db = new PDO("sqlite:database.db");
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOEception $e) {
+			die("Something went wrong -> " .$e->getMessage());
+		}
+
+		$q = "SELECT * FROM Favourites WHERE UserId = $userId AND GeonameId = $geonameId";
+
+		$result;
+		$stm;
+		try {
+			$stm = $db->prepare($q);
+			$stm->execute();
+			$result = $stm->fetchAll();
+		}
+		catch(PDOException $e) {
+			echo("Error creating query40: " .$e->getMessage());
+			return false;
+		}
+
+		if(Count($result) == 0) {
+			return false;
+		}
+		return true;
+	}
 
 
 
+	public function getUserFavouriteIds($useremail) {
+
+		$userId = (int) $this->getUserIdFromEmail($useremail);
+
+		$db = null;
+			
+		try {
+			$db = new PDO("sqlite:database.db");
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOEception $e) {
+			die("Something went wrong -> " .$e->getMessage());
+		}
+
+		$q = "SELECT GeonameId FROM Favourites WHERE UserId = $userId";
+
+		$result;
+		$stm;
+		try {
+			$stm = $db->prepare($q);
+			$stm->execute();
+			$result = $stm->fetchAll();
+		}
+		catch(PDOException $e) {
+			echo("Error creating query40: " .$e->getMessage());
+			return false;
+		}
+
+/*
+		if(isset($result[0])) {
+			$userId = $result[0]['UserId'];
+		}
+*/
+
+		$geonameIds = array();
+
+		foreach ($result as $key => $value) {
+			$geonameId = $value['GeonameId'];
+			array_push($geonameIds, $geonameId);
+		}
 
 		//Om inga favoriter finns, returnera false
-
-		return false;
+		return $geonameIds;
+	
 	}
+
+
+
 
 }

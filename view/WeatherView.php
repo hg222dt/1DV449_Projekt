@@ -15,13 +15,14 @@ class WeatherView {
 	const ACTION_USER_GOTO_LOGON = "logOn";
 	const ACTION_LOG_USER_IN = "logUserIn";
 	const ACTION_USER_LOG_OUT = "userLogOut";
+	const ACTION_SAVE_AS_FAVOURITE = "saveAsFavourite";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
-	private $siteModel;
+	private $weatherModel;
 
-	public function __construct($siteModel) {
-		$this->siteModel = $siteModel;
+	public function __construct($weatherModel) {
+		$this->weatherModel = $weatherModel;
 	}
 
 	public function getUserAction() {
@@ -47,6 +48,10 @@ class WeatherView {
 				return WeatherView::ACTION_LOG_USER_IN;
 				break;
 
+			case WeatherView::ACTION_SAVE_AS_FAVOURITE:
+				return WeatherView::ACTION_SAVE_AS_FAVOURITE;
+				break;
+
 			case WeatherView::ACTION_USER_LOG_OUT:
 				return WeatherView::ACTION_USER_LOG_OUT;
 				break;
@@ -55,9 +60,40 @@ class WeatherView {
 
 	public function getPageFoundation($textData) {
 
+
 		if($_SESSION['userLoggedIn']) {
 
-			$startPageChunk = "
+			
+			$useremail = $this->getLoggedInUserEmail();
+
+			$weatherReports = $this->weatherModel->getFavourites($useremail);
+			
+			$favouriteChunk = "<h3>Dina favoriter</h3>";
+
+			foreach ($weatherReports as $key => $weatherReport) {
+
+				$city = $weatherReport->city;
+
+				$name = $city->toponymName;
+
+				$favouriteChunk .= "<div>" . $name . "</div>";
+
+			}
+
+		} else {
+			$favouriteChunk = "";
+		}
+
+
+		$startPageChunk = "
+<div class='col-sm-4'>
+	$favouriteChunk
+</div>
+<div class='col-sm-4'>";
+	
+		if($_SESSION['userLoggedIn']) {
+
+			$startPageChunk .= "
 USER LOGGED IN
 <a href='?userLogOut' id='loginLink'>Logga ut!</a>
 <div class='centerizedContent'>
@@ -76,7 +112,7 @@ $textData
 
 		} else {
 
-		$startPageChunk = "
+		$startPageChunk .= "
 <a href='view/LogonView.html' id='loginLink'>Logga in!</a>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
@@ -93,6 +129,10 @@ $textData
 		";
 
 		}
+
+		$startPageChunk .= "
+</div>
+<div class='col-sm-4'></div>";
 
 		return $startPageChunk;
 
@@ -135,6 +175,7 @@ $textData
 	public function showStartPageWeatherReport($weatherReport) {
 
 		$dayItems = $weatherReport->dayItems;
+		$geonameId = $weatherReport->city->geonameId;
 
 		
 		$markup = "<div>Here you go!</div>";
@@ -142,6 +183,10 @@ $textData
 		foreach ($dayItems as $key => $day) {
 			//$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
 			$markup .= "<div class='weatherReportItem'>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='./images/" . $day->symbolVar . ".png'></div>";
+		}
+
+		if($_SESSION['userLoggedIn']) {
+			$markup .= "<a href='?saveAsFavourite=$geonameId'>Spara som favorit!</a>";
 		}
 
 		return $this->getPageFoundation($markup);
@@ -153,7 +198,7 @@ $textData
 		return $_POST['searchQueryCity'];
 	}
 
-	public function getLoginParam() {
+	public function getParam() {
 		return $_GET[key($_GET)];
 	}
 
@@ -162,6 +207,19 @@ $textData
     	$parts = parse_url($url);
     	parse_str($parts['query'], $query);
     	return $query['userPickFromMultiple'];
+	}
+
+	public function getLoggedInUserEmail() {
+
+		if(isset($_SESSION['userLoggedInEmail'])) {
+
+			return $_SESSION['userLoggedInEmail'];
+
+		} else {
+
+			return null;
+		}
+
 	}
 
 }

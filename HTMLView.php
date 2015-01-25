@@ -28,11 +28,7 @@ class HTMLView {
 			<body>
 				<div id='status'></div>
 				<div class='container' style='height:100%'>
-					<div class='col-sm-4'></div>
-						<div class='col-sm-4'>
-							$body
-						</div>
-					<div class='col-sm-4'></div>
+					$body
 				</div>
 			</body>
 			

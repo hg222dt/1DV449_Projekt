@@ -66,7 +66,7 @@ class WeatherController {
 
 				case WeatherView::ACTION_LOG_USER_IN:
 
-					$loginParam = $this->weatherView->getLoginParam();
+					$loginParam = $this->weatherView->getParam();
 
 					$userLoggedIn = $this->weatherModel->logUserIn($loginParam);
 
@@ -83,6 +83,15 @@ class WeatherController {
 
 					return $this->weatherView->showStartPage();
 					break;
+
+				case WeatherView::ACTION_SAVE_AS_FAVOURITE:
+
+
+					$geonameId = $this->weatherView->getParam();
+
+					$this->weatherModel->saveAsFavourite($geonameId);
+
+					return $this->weatherView->showStartPage();
 
 				default:
 
