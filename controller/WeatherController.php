@@ -19,9 +19,6 @@ class WeatherController {
 		$this->weatherModel = new WeatherModel();
 		$this->weatherView = new WeatherView($this->weatherModel);
 		$this->logonView = new LogonView();
-
-//		$_SESSION['userLoggedIn'] = false;
-//		$_SESSION['userLoggedInEmail'] = "";
 	}
 
 	public function doControll() {
