@@ -61,7 +61,7 @@ class WeatherView {
 	public function getPageFoundation($textData) {
 
 
-		if($_SESSION['userLoggedIn']) {
+		if(isset($_SESSION['userLoggedIn']) && $_SESSION['userLoggedIn']) {
 
 			
 			$useremail = $this->getLoggedInUserEmail();
