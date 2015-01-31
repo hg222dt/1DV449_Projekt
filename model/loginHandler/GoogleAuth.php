@@ -5,8 +5,9 @@ class GoogleAuth
 	protected $db;
 	protected $client;
 
-	public function __construct(Google_Client $googleClient = null) 
+	public function __construct(DB $db = null, Google_Client $googleClient = null) 
 	{
+		$this->db = $db;
 		$this->client = $googleClient;
 		
 		if($this->client) 
@@ -39,9 +40,9 @@ class GoogleAuth
 			$this->client->authenticate($_GET['code']);
 
 			$this->setToken($this->client->getAccessToken());
-/*
+
 			$this->storeUser($this->getPayload());
-*/
+
 			return true;
 		}
 
@@ -57,7 +58,45 @@ class GoogleAuth
 	public function logout() 
 	{
 		unset($_SESSION['access_token']);
-		//unset($_SESSION['logged_in_user_google_id']);
+		unset($_SESSION['logged_in_user_google_id']);
+	}
+
+	protected function getPayload() 
+	{
+		$payload = $this->client->verifyIdToken()->getAttributes()['payload'];
+
+		return $payload;
+	}
+
+	protected function storeUser($payload) 
+	{
+
+		$sql = "SELECT * FROM google_users WHERE google_id = {$payload['id']}";
+
+		$userCandidateData = $this->db->query($sql);
+
+
+		if(Count($userCandidateData) == 0)
+		{
+			$sql = "INSERT INTO google_users (google_id, email)
+			VALUES({$payload['id']}, '{$payload['email']}')
+			";
+
+			$this->db->query($sql);
+
+			$_SESSION['logged_in_user_google_id'] = $payload['id'];
+
+		} else {
+			$_SESSION['logged_in_user_google_id'] = $userCandidateData[0]['google_id'];
+		}		
+	}
+
+	public function getUserGoogleId() 
+	{
+		if(isset($_SESSION['logged_in_user_google_id'])) 
+		{
+			return $_SESSION['logged_in_user_google_id'];
+		}
 	}
 
 }
