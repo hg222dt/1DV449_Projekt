@@ -33,4 +33,25 @@ class DB
 
 	}
 
+	public function getUserIdFromGoogleId($user_google_id)
+	{
+		//$user_google_id = (double)$user_google_id;
+
+		$sql = "SELECT * FROM google_users WHERE google_id = " . $user_google_id;
+
+		$result;
+		$stm;
+		try {
+			$stm = $this->sqLiteDb->prepare($sql);
+			$stm->execute();
+			$result = $stm->fetchAll();
+		}
+		catch(PDOException $e) {
+			echo("Error creating query: " .$e->getMessage());
+			return false;
+		}
+
+		return (int) $result[0]['id'];
+	}
+
 }

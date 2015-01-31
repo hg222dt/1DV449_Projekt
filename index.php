@@ -11,7 +11,7 @@
 	$auth = new GoogleAuth($db, $googleClient);
 
 
-	$weatherController = new WeatherController();
+	$weatherController = new WeatherController($auth);
 
 	$htmlBody = $weatherController->doControll();
 
@@ -20,7 +20,7 @@
 		header('Location: index.php');
 	}
 
-
+/*
 	$loggedInChunk = function($auth) {
 		if(!$auth->isLoggedIn()) 
 		{
@@ -30,7 +30,7 @@
 			return "You are signed in. <a href='logout.php'>Sign Out</a>";
 		}
 	};
-
+*/
 
 
 /*
@@ -54,7 +54,7 @@
 	<body>
 		<div id='status'></div>
 		<div class='container' style='height:100%'>
-			<?php echo $loggedInChunk($auth) ?>
+			
 			<?php echo $htmlBody ?>
 		</div>
 	</body>

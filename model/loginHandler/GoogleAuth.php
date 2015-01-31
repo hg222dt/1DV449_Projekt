@@ -70,6 +70,13 @@ class GoogleAuth
 
 	protected function storeUser($payload) 
 	{
+/*
+		var_dump(gettype($payload['id']));
+		var_dump($payload['id']);
+		$_SESSION['logged_in_user_google_id'] = $payload['id'];
+		var_dump($_SESSION['logged_in_user_google_id']);
+*/
+		//die();
 
 		$sql = "SELECT * FROM google_users WHERE google_id = {$payload['id']}";
 
@@ -83,12 +90,10 @@ class GoogleAuth
 			";
 
 			$this->db->query($sql);
-
-			$_SESSION['logged_in_user_google_id'] = $payload['id'];
-
-		} else {
-			$_SESSION['logged_in_user_google_id'] = $userCandidateData[0]['google_id'];
-		}		
+		}
+		
+		$_SESSION['logged_in_user_google_id'] = $payload['id'];
+	
 	}
 
 	public function getUserGoogleId() 
@@ -97,6 +102,10 @@ class GoogleAuth
 		{
 			return $_SESSION['logged_in_user_google_id'];
 		}
+	}
+
+	public function getUserIdFromGoogleId($user_google_id) {
+		return $this->db->getUserIdFromGoogleId($user_google_id);
 	}
 
 }

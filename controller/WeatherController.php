@@ -15,8 +15,8 @@ class WeatherController {
 	private $weatherModel;
 	private $logonView;
 
-	public function __construct() {
-		$this->weatherModel = new WeatherModel();
+	public function __construct($auth) {
+		$this->weatherModel = new WeatherModel($auth);
 		$this->weatherView = new WeatherView($this->weatherModel);
 		$this->logonView = new LogonView();
 	}
@@ -85,7 +85,6 @@ class WeatherController {
 					break;
 
 				case WeatherView::ACTION_SAVE_AS_FAVOURITE:
-
 
 					$geonameId = $this->weatherView->getParam();
 

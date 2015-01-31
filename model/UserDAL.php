@@ -78,45 +78,8 @@ class UserDAL {
 
 	}
 
-	public function getUserIdFromEmail($useremail) {
 
-		$db = null;
-			
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOEception $e) {
-			die("Something went wrong -> " .$e->getMessage());
-		}
-
-
-		$q = "SELECT * FROM User WHERE Email = '$useremail'";
-
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query5: " .$e->getMessage());
-			return false;
-		}
-
-		if(isset($result[0])) {
-			$userId = $result[0]['UserId'];
-		} 
-
-		return $userId;
-
-	}
-
-
-	public function saveAsFavourite($useremail, $geonameId) {
-
-		$userId = (int) $this->getUserIdFromEmail($useremail);
+	public function saveAsFavourite($userId, $geonameId) {
 
 		$geonameId = (int) $geonameId;
 
@@ -182,9 +145,7 @@ class UserDAL {
 
 
 
-	public function getUserFavouriteIds($useremail) {
-
-		$userId = (int) $this->getUserIdFromEmail($useremail);
+	public function getUserFavouriteIds($userId) {
 
 		$db = null;
 			
@@ -210,12 +171,6 @@ class UserDAL {
 			return false;
 		}
 
-/*
-		if(isset($result[0])) {
-			$userId = $result[0]['UserId'];
-		}
-*/
-
 		$geonameIds = array();
 
 		foreach ($result as $key => $value) {
@@ -227,8 +182,5 @@ class UserDAL {
 		return $geonameIds;
 	
 	}
-
-
-
 
 }

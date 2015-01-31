@@ -60,13 +60,15 @@ class WeatherView {
 
 	public function getPageFoundation($textData) {
 
+		$authUrl = $this->weatherModel->auth->getAuthUrl();
 
-		if(isset($_SESSION['userLoggedIn']) && $_SESSION['userLoggedIn']) {
+		if($this->weatherModel->isUserLoggedIn()) {
 
+			$user_google_id = $_SESSION['logged_in_user_google_id'];
 			
-			$useremail = $this->getLoggedInUserEmail();
+			$userId = $this->weatherModel->getUserIdFromGoogleId($user_google_id);
 
-			$weatherReports = $this->weatherModel->getFavourites($useremail);
+			$weatherReports = $this->weatherModel->getFavourites($userId);
 			
 			$favouriteChunk = "<h3>Dina favoriter</h3>";
 
@@ -77,7 +79,6 @@ class WeatherView {
 				$name = $city->toponymName;
 
 				$favouriteChunk .= "<div>" . $name . "</div>";
-
 			}
 
 		} else {
@@ -86,15 +87,15 @@ class WeatherView {
 
 
 		$startPageChunk = "
-<a href='?userLogOut' id='loginLink'>Logga ut!</a>
 <div class='col-sm-4'>
 	$favouriteChunk
 </div>
 <div class='col-sm-4'>";
 	
-//		if($_SESSION['userLoggedIn']) {
+		if($this->weatherModel->isUserLoggedIn()) {
 
 			$startPageChunk .= "
+You are signed in. <a href='logout.php'>Sign Out</a>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>
@@ -108,17 +109,11 @@ class WeatherView {
 </div>
 $textData
 		";
-/*
-
-//till första startPageChunk
-//USER LOGGED IN
-<a href='?userLogOut' id='loginLink'>Logga ut!</a>
-
 
 		} else {
 
 		$startPageChunk .= "
-<a href='view/LogonView.html' id='loginLink'>Logga in!</a>
+<a href='$authUrl'>Sign in with Google</a>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>
@@ -134,7 +129,7 @@ $textData
 		";
 
 		}
-*/
+
 		$startPageChunk .= "
 </div>
 <div class='col-sm-4'></div>";
@@ -190,7 +185,7 @@ $textData
 			$markup .= "<div class='weatherReportItem'>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='./images/" . $day->symbolVar . ".png'></div>";
 		}
 
-		if($_SESSION['userLoggedIn']) {
+		if($this->weatherModel->isUserLoggedIn()) {
 			$markup .= "<a href='?saveAsFavourite=$geonameId'>Spara som favorit!</a>";
 		}
 

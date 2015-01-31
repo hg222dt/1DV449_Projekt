@@ -1,5 +1,7 @@
 <?php
 
+require_once('model/City.php');
+
 session_start();
 
 require_once 'vendor/autoload.php';

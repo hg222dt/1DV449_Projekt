@@ -7,16 +7,20 @@
 
  require_once("WeatherApiHandler.php");
  require_once("UserDAL.php");
+ require_once("loginHandler/GoogleAuth.php");
 
 class WeatherModel {
 
 
 	public $weatherApiHandler;
 	private $userDAL;
+	public $auth;
 
-	public function __construct() {
+
+	public function __construct($auth) {
 		$this->weatherApiHandler = new WeatherApiHandler();
 		$this->userDAL = new UserDAL();
+		$this->auth = $auth;
 	}
 
 	//Returns City data on rsult of users query. Multiple cities if needed.
@@ -32,6 +36,16 @@ class WeatherModel {
 		}
 
 		return $this->getCitiesFromGeonameIds($cityIdArray);
+	}
+
+	public function isUserLoggedIn()
+	{
+		return $this->auth->isLoggedIn();
+	}
+
+	public function getUserIdFromGoogleId($user_google_id)
+	{
+		return $this->auth->getUserIdFromGoogleId($user_google_id);
 	}
 
 	public function getCitiesFromGeonameIds($cityIdArray) {
@@ -63,6 +77,9 @@ class WeatherModel {
 
 	public function getSpecificCityWeather($cityDataArray) {
 
+		//var_dump($cityDataArray);
+		//die();
+
 		$weatherReport;
 
 		//Kolla om stad finns på databasen eller inte.
@@ -91,9 +108,9 @@ class WeatherModel {
 		return $weatherReport;
 	}
 
-	public function getFavourites($useremail) {
+	public function getFavourites($userId) {
 
-		$geonameIds = $this->userDAL->getUserFavouriteIds($useremail);
+		$geonameIds = $this->userDAL->getUserFavouriteIds($userId);
 
 		$weatherReports = array();
 
@@ -116,8 +133,9 @@ class WeatherModel {
 
 	public function saveAsFavourite($cityId) {
 
-		$useremail = $_SESSION['userLoggedInEmail'];
-		$this->userDAL->saveAsFavourite($useremail, $cityId);
+		$userId = $this->getUserIdFromGoogleId($_SESSION['logged_in_user_google_id']);
+
+		$this->userDAL->saveAsFavourite($userId, $cityId);
 
 	}
 
