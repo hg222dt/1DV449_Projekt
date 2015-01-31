@@ -86,16 +86,15 @@ class WeatherView {
 
 
 		$startPageChunk = "
+<a href='?userLogOut' id='loginLink'>Logga ut!</a>
 <div class='col-sm-4'>
 	$favouriteChunk
 </div>
 <div class='col-sm-4'>";
 	
-		if($_SESSION['userLoggedIn']) {
+//		if($_SESSION['userLoggedIn']) {
 
 			$startPageChunk .= "
-USER LOGGED IN
-<a href='?userLogOut' id='loginLink'>Logga ut!</a>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>
@@ -109,6 +108,12 @@ USER LOGGED IN
 </div>
 $textData
 		";
+/*
+
+//till första startPageChunk
+//USER LOGGED IN
+<a href='?userLogOut' id='loginLink'>Logga ut!</a>
+
 
 		} else {
 
@@ -129,7 +134,7 @@ $textData
 		";
 
 		}
-
+*/
 		$startPageChunk .= "
 </div>
 <div class='col-sm-4'></div>";

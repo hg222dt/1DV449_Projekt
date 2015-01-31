@@ -3,7 +3,7 @@
 	require_once("HTMLView.php");
 	require_once("controller/WeatherController.php");
 
-
+	
 	session_start();
 
 	$weatherController = new WeatherController();
@@ -12,3 +12,5 @@
 
 	$view = new HTMLView();
 	$view->echoHTML($htmlBody);
+
+
