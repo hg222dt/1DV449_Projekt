@@ -15,7 +15,24 @@
 
 	$htmlBody = $weatherController->doControll();
 
-	
+	if($auth->checkRedirectCode()) 
+	{
+		header('Location: index.php');
+	}
+
+
+	$loggedInChunk = function($auth) {
+		if(!$auth->isLoggedIn()) 
+		{
+			$authUrl = $auth->getAuthUrl();
+			return "<a href='$authUrl'>Sign in with Google</a>";
+		} else {
+			return "You are signed in. <a href='logout.php'>Sign Out</a>";
+		}
+	};
+
+
+
 /*
 	$view = new HTMLView();
 	$view->echoHTML($htmlBody);*/
@@ -37,6 +54,7 @@
 	<body>
 		<div id='status'></div>
 		<div class='container' style='height:100%'>
+			<?php echo $loggedInChunk($auth) ?>
 			<?php echo $htmlBody ?>
 		</div>
 	</body>
