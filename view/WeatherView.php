@@ -86,8 +86,10 @@ class WeatherView {
 <div class='col-sm-4'>
 	{$this->getUserFavouriteMarkup()}
 </div>
-<div class='col-sm-4'>
-You are signed in. <a href='logout.php'>Sign Out</a>
+<div class='col-sm-4' id='midSection'>
+<div id='signInOutTool'>
+	You are signed in. <a href='logout.php'>Sign Out</a>
+</div>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>
@@ -109,7 +111,9 @@ $resultData
 <div class='col-sm-4'>
 </div>
 <div class='col-sm-4'>
-<a href='{$this->weatherModel->auth->getAuthUrl()}'>Sign in with Google</a>
+<div id='signInOutTool'>
+	<a href='{$this->weatherModel->auth->getAuthUrl()}'>Sign in with Google</a>
+</div>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>

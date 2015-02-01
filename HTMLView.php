@@ -14,7 +14,7 @@ class HTMLView {
 
 		echo "
 <!DOCTYPE html>
-<html>
+<html manifest='cache.manifest'>
 	<head>
 		<title>VadfanblirdetförväderPUNKTse</title>
 

@@ -10,17 +10,25 @@ var WESE = WESE || {};
 WESE.updateOnlineStatus = function(msg) {
   var offlineMessage = 'Ouups! Någon har klippt linan. Eftersom att du inte har internet kan vi inte göra sökningar åt sig för tillfället.';
   var status = document.getElementById('status');
+  var midSection = document.getElementById('midSection');
+
   var submitButton = document.getElementById('submitButton');
   var cityInput = document.getElementById('cityInput');
-  var loginLink = document.getElementById('loginLink');
+  var logindiv = document.getElementById('signInOutTool');
   var condition = navigator.onLine ? 'ONLINE' : 'OFFLINE';
 
   if(condition === 'OFFLINE') {
-	  status.setAttribute('class', condition);
-	  status.innerHTML = offlineMessage;
+    logindiv.innerHTML = "";
+
+    var youreOfflineDiv = document.createElement('div');
+    youreOfflineDiv.setAttribute('class', 'offlineMessage');
+    youreOfflineDiv.innerHTML = offlineMessage;
+
+    logindiv.appendChild(youreOfflineDiv);
+
 	  submitButton.setAttribute('disabled', true)
 	  cityInput.setAttribute('disabled', true);
-	  loginLink.remove();
+	  
   }
 }
 

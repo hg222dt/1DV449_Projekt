@@ -133,8 +133,6 @@ class WebserviceDAL {
 
 		$yrXml = simplexml_load_string($weatherData) or die("Error: Cannot create object");
 
-		
-		//var_dump($yrXml);
 
 		if($yrXml->meta->nextupdate == null)
 		{
