@@ -27,8 +27,6 @@ class WeatherView {
 
 	public function getUserAction() {
 
-		//var_dump(key($_GET));
-
 		//Hämtar ut vilken användar-action som valts
 		switch(key($_GET)) {
 
@@ -58,43 +56,37 @@ class WeatherView {
 		}
 	}
 
-	public function getPageFoundation($textData) {
-
-		$authUrl = $this->weatherModel->auth->getAuthUrl();
-
-		if($this->weatherModel->isUserLoggedIn()) {
-
-			$user_google_id = $_SESSION['logged_in_user_google_id'];
+	public function getUserFavouriteMarkup() 
+	{
+		$user_google_id = $_SESSION['logged_in_user_google_id'];
 			
-			$userId = $this->weatherModel->getUserIdFromGoogleId($user_google_id);
+		$userId = $this->weatherModel->getUserIdFromGoogleId($user_google_id);
 
-			$weatherReports = $this->weatherModel->getFavourites($userId);
-			
-			$favouriteChunk = "<h3>Dina favoriter</h3>";
+		$weatherReports = $this->weatherModel->getFavourites($userId);
+		
+		$favouriteChunk = "<h3>Dina favoriter</h3>";
 
-			foreach ($weatherReports as $key => $weatherReport) {
+		foreach ($weatherReports as $key => $weatherReport) {
 
-				$city = $weatherReport->city;
+			$city = $weatherReport->city;
 
-				$name = $city->toponymName;
+			$name = $city->toponymName;
 
-				$favouriteChunk .= "<div>" . $name . "</div>";
-			}
-
-		} else {
-			$favouriteChunk = "";
+			$favouriteChunk .= "<div>" . $name . "</div>";
 		}
 
+		return $favouriteChunk;
+	}
 
-		$startPageChunk = "
+	public function getPageFoundation($resultData) {
+
+		if($this->weatherModel->isUserLoggedIn()) 
+		{
+			$startPageChunk = "
 <div class='col-sm-4'>
-	$favouriteChunk
+	{$this->getUserFavouriteMarkup()}
 </div>
-<div class='col-sm-4'>";
-	
-		if($this->weatherModel->isUserLoggedIn()) {
-
-			$startPageChunk .= "
+<div class='col-sm-4'>
 You are signed in. <a href='logout.php'>Sign Out</a>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
@@ -107,13 +99,17 @@ You are signed in. <a href='logout.php'>Sign Out</a>
 		</form>
 	</div>
 </div>
-$textData
-		";
+$resultData
+</div>
+<div class='col-sm-4'></div>";
 
 		} else {
 
-		$startPageChunk .= "
-<a href='$authUrl'>Sign in with Google</a>
+			$startPageChunk = "
+<div class='col-sm-4'>
+</div>
+<div class='col-sm-4'>
+<a href='{$this->weatherModel->auth->getAuthUrl()}'>Sign in with Google</a>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>
@@ -125,14 +121,11 @@ $textData
 		</form>
 	</div>
 </div>
-$textData
-		";
-
-		}
-
-		$startPageChunk .= "
+$resultData
 </div>
 <div class='col-sm-4'></div>";
+
+		}
 
 		return $startPageChunk;
 
@@ -157,6 +150,13 @@ $textData
 	public function showStartPageNoMatch() {
 
 		$markup = "<div>Din sökning matchade inget resultat.</div>";
+
+		return $this->getPageFoundation($markup);
+	}
+
+	public function showErrorMessagePage()
+	{
+		$markup = "<div>Något blev fel när sökningen gjordes.</div>";
 
 		return $this->getPageFoundation($markup);
 	}
@@ -207,19 +207,6 @@ $textData
     	$parts = parse_url($url);
     	parse_str($parts['query'], $query);
     	return $query['userPickFromMultiple'];
-	}
-
-	public function getLoggedInUserEmail() {
-
-		if(isset($_SESSION['userLoggedInEmail'])) {
-
-			return $_SESSION['userLoggedInEmail'];
-
-		} else {
-
-			return null;
-		}
-
 	}
 
 }

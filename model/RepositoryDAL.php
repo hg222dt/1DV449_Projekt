@@ -2,6 +2,21 @@
 
 class RepositoryDAL {
 
+	protected $db;
+
+	public function __construct()
+	{
+		$this->db = null;
+
+		try {
+			$this->db = new PDO("sqlite:database.db");
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOEception $e) {
+			die("Del -> " .$e->getMessage());
+		}
+	}
+
 	public function retrieveCityRepository($geonameId) {
 
 		$geonameId = (int) $geonameId;
@@ -22,7 +37,6 @@ class RepositoryDAL {
 		}
 		
 	}
-
 
 	public function retrieveDaysRepository($cityId) {
 
@@ -87,43 +101,13 @@ class RepositoryDAL {
 		$toponymName = $city->toponymName;
 		$muncipName = $city->muncipName;
 
-		$db = null;
-			
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOEception $e) {
-			die("Something went wrong -> " .$e->getMessage());
-		}
-
 		$q = "INSERT INTO City (NextUpdate, GeonameID, Name, ToponymName, MunicipName, ProvinceName, CountryName) VALUES ($nextUpdate, $geonameId, '$cityName', '$toponymName', '$muncipName', '$provinceName', '$countryName')";
 
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query6: " .$e->getMessage());
-			return false;
-		}
+		$this->makeDatabaseRequest($q);
 
 		$q = "SELECT last_insert_rowid()";
 
-		$result;
-		$stm;
-		try {
-			$stm = $db->prepare($q);
-			$stm->execute();
-			$result = $stm->fetchAll();
-		}
-		catch(PDOException $e) {
-			echo("Error creating query1: " .$e->getMessage());
-			return false;
-		}
+		$result = $this->makeDatabaseRequest($q);		
 
 		$cityId = (int) $result[0][0];
 		
@@ -132,20 +116,10 @@ class RepositoryDAL {
 
 	public function makeDatabaseRequest($q) {
 
-		$db = null;
-
-		try {
-			$db = new PDO("sqlite:database.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch(PDOEception $e) {
-			die("Del -> " .$e->getMessage());
-		}
-
 		$result;
 		$stm;
 		try {
-			$stm = $db->prepare($q);
+			$stm = $this->db->prepare($q);
 			$stm->execute();
 			$result = $stm->fetchAll();
 		}

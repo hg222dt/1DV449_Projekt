@@ -11,4 +11,4 @@
 	$htmlBody = $weatherController->doControll();
 
 	$view = new HTMLView();
-	$view->echoHTML($htmlBody);
+	//$view->echoHTML($htmlBody);

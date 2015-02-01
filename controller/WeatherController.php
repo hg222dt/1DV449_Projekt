@@ -37,9 +37,11 @@ class WeatherController {
 						return $this->weatherView->showStartPageMultipleResults($cityDataArray);
 
 					} elseif($cityAmount == 1) {
-
-						$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
-
+						try {
+							$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
+						} catch (Exception $e) {
+							return $this->weatherView->showErrorMessagePage();
+						}
 						return $this->weatherView->showStartPageWeatherReport($weatherReport);
 
 					} else {
@@ -54,7 +56,11 @@ class WeatherController {
 
 					$cityDataArray[0] = $this->weatherModel->getLatestChosenCitySession($this->weatherView->getRequestedId());
 
-					$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
+						try{
+							$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
+						} catch (Exception $e) {
+							return $this->weatherView->showErrorMessagePage();
+						}
 
 					return $this->weatherView->showStartPageWeatherReport($weatherReport);
 					break;

@@ -44,6 +44,7 @@ class WebserviceDAL {
 
 		$data = $this->curlGetRequest($getHierarchyUrl);
 
+
 		//Vi har hittat ett sökresultat med en stad
 
 		$data = simplexml_load_string($data) or die("Error: Cannot create object");
@@ -78,6 +79,12 @@ class WebserviceDAL {
 		}
 
 
+
+
+
+
+
+
 		return new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, null);
 
 	}
@@ -101,23 +108,46 @@ class WebserviceDAL {
 			
 		};
 
+		//Hämta is prefferedname med geonameId
+		
+
+
+
+
 		//Get data from Yr.no api
 
-		$getYrDataUrl = "http://www.yr.no/place/" . str_replace(" ", "%20", $city->countryName) . "/" . str_replace(" ", "%20", $city->provinceName) . "/" . str_replace(" ", "%20", $city->cityName) . "/forecast.xml";
+		$getYrDataUrl = "http://www.yr.no/place/" . str_replace(" ", "%20", $city->countryName) . "/" . str_replace(" ", "%20", $city->provinceName) . "/" . str_replace(" ", "%20", $city->toponymName) . "/forecast.xml";
+
+//		var_dump($getYrDataUrl);
 
 		$weatherData = $this->curlGetRequest($getYrDataUrl);
 
+
 		$yrXml = simplexml_load_string($weatherData) or die("Error: Cannot create object");
+
+		
+		//var_dump($yrXml);
+
+		if($yrXml->meta->nextupdate == null)
+		{
+			throw new Exception("Search api error.");
+		}
+
+		
 
 		$nextUpdateItem = strtotime((string)$yrXml->meta->nextupdate);
 
 		$city->nextUpdate = $nextUpdateItem;
 
 		$weatherDayItems = array();
+
+		if($yrXml->forecast->tabular != null) {
+
+			foreach ($yrXml->forecast->tabular->children() as $value) {
+				array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period'], $value->symbol['var']));
+			}
 		
-		foreach ($yrXml->forecast->tabular->children() as $value) {
-			array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period'], $value->symbol['var']));
-		}
+		} 
 
 		//Dra ut korrekta perioder
 		$weatherDays = array_filter($weatherDayItems, $getCorrectPeriod);

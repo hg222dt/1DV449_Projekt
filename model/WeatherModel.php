@@ -92,14 +92,17 @@ class WeatherModel {
 
 				$weatherReport = $this->weatherApiHandler->getWeatherDaysFromRepository($cityDataArray[0]);
 			} else {
-				$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
+
+				$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);				
+
 				$this->weatherApiHandler->updateOldWeatherReportFromRepository($cityDataArray[0], $weatherReport);
 			}
 
 		} else {
 //			var_dump("Dont use cache");
-
+			
 			$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
+
 			$cityId = $this->weatherApiHandler->saveCityToRepository($weatherReport->city);
 			$weatherReport->city->cityId = $cityId;
 			$this->weatherApiHandler->saveDaysToRepository($weatherReport);
@@ -158,8 +161,6 @@ class WeatherModel {
 		$_SESSION['userLoggedIn'] = false;
 		$_SESSION['userLoggedInEmail'] = "";
 	}
-
-
 
 
 	public function getLatestChosenCitySession($geonameId) {
