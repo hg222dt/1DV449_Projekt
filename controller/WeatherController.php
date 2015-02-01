@@ -12,11 +12,11 @@ require_once("./view/LogonView.php");
 class WeatherController {
 
 	private $weatherView;
-	private $weatherModel;
+	public $weatherModel;
 	private $logonView;
 
-	public function __construct($auth) {
-		$this->weatherModel = new WeatherModel($auth);
+	public function __construct() {
+		$this->weatherModel = new WeatherModel();
 		$this->weatherView = new WeatherView($this->weatherModel);
 		$this->logonView = new LogonView();
 	}

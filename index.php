@@ -5,13 +5,11 @@
 	require_once("HTMLView.php");
 	require_once("controller/WeatherController.php");
 
-	$db = new DB;
-	$googleClient = new Google_Client;
-
-	$auth = new GoogleAuth($db, $googleClient);
 
 
-	$weatherController = new WeatherController($auth);
+	$weatherController = new WeatherController();
+
+	$auth = $weatherController->weatherModel->auth;
 
 	$htmlBody = $weatherController->doControll();
 

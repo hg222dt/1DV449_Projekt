@@ -17,10 +17,13 @@ class WeatherModel {
 	public $auth;
 
 
-	public function __construct($auth) {
+	public function __construct() {
 		$this->weatherApiHandler = new WeatherApiHandler();
 		$this->userDAL = new UserDAL();
-		$this->auth = $auth;
+		$db = new DB;
+		$googleClient = new Google_Client;
+		$this->auth = new GoogleAuth($db, $googleClient);
+
 	}
 
 	//Returns City data on rsult of users query. Multiple cities if needed.

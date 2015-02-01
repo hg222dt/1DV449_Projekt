@@ -14,16 +14,14 @@ class HTMLView {
 
 		echo "
 <!DOCTYPE html>
-<html manifest='cache.manifest'>
+<html>
 	<head>
 		<title>VadfanblirdetförväderPUNKTse</title>
 
 		<link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
 		<link rel='stylesheet' type='text/css' href='./css/styles.css'>
 
-		<script>
-			
-		</script>
+
 	</head>
 	<body>
 		<div id='status'></div>
@@ -31,6 +29,10 @@ class HTMLView {
 			
 			$body
 		</div>
+		<iframe id='manifest_iframe_hack' 
+		  style='display: none;' 
+		  src='temporary_manifest_hack.html'>
+		</iframe> 
 	</body>
 	
 	

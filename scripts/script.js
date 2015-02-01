@@ -32,10 +32,16 @@ WESE.updateOnlineStatus = function(msg) {
   }
 }
 
+
 WESE.loaded = function() {
+
+  //Gör ajax-anrop till servern, och se om användaren har blivit online.
+
   WESE.updateOnlineStatus('load');
   document.body.addEventListener('offline', function () { WESE.updateOnlineStatus('offline') }, false);
   document.body.addEventListener('online', function () { WESE.updateOnlineStatus('online') }, false);
+
+
 }
 
 

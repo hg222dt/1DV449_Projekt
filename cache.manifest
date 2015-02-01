@@ -1,6 +1,20 @@
 CACHE MANIFEST
-#v33
+#v38
+
+CACHE:
+http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css
+http://localhost/1DV449_Projekt/css/styles.css
+http://localhost/1DV449_Projekt/scripts/script.js
+http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
+http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js
+
+/1DV449_Projekt/model/ajaxHandler.php
+
 
 
 NETWORK:
 /index.php
+/signinPage.php
+
+FALLBACK:
+/offline.php
