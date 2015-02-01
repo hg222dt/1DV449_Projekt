@@ -111,14 +111,22 @@ class WebserviceDAL {
 		//Hämta is prefferedname med geonameId
 		
 
+		if($city->countryName == "Norway") {
 
+			$provinceName = $city->provinceName;
 
+			$pieces = explode(" ", $provinceName);
+			$provinceName = $pieces[0];
 
-		//Get data from Yr.no api
+			$getYrDataUrl = "http://www.yr.no/place/" . str_replace(" ", "%20", $city->countryName) . "/" . str_replace(" ", "%20", $provinceName) . "/" . str_replace(" ", "%20", $city->muncipName) . "/" . str_replace(" ", "%20", $city->toponymName) . "/forecast.xml";
 
-		$getYrDataUrl = "http://www.yr.no/place/" . str_replace(" ", "%20", $city->countryName) . "/" . str_replace(" ", "%20", $city->provinceName) . "/" . str_replace(" ", "%20", $city->toponymName) . "/forecast.xml";
+		} else { 
 
-//		var_dump($getYrDataUrl);
+			//Get data from Yr.no api
+
+			$getYrDataUrl = "http://www.yr.no/place/" . str_replace(" ", "%20", $city->countryName) . "/" . str_replace(" ", "%20", $city->provinceName) . "/" . str_replace(" ", "%20", $city->toponymName) . "/forecast.xml";
+
+		}
 
 		$weatherData = $this->curlGetRequest($getYrDataUrl);
 
@@ -131,13 +139,13 @@ class WebserviceDAL {
 		if($yrXml->meta->nextupdate == null)
 		{
 			throw new Exception("Search api error.");
+		} 
+		else 
+		{
+			$nextUpdateItem = strtotime((string)$yrXml->meta->nextupdate);
+
+			$city->nextUpdate = $nextUpdateItem;
 		}
-
-		
-
-		$nextUpdateItem = strtotime((string)$yrXml->meta->nextupdate);
-
-		$city->nextUpdate = $nextUpdateItem;
 
 		$weatherDayItems = array();
 
@@ -147,6 +155,8 @@ class WebserviceDAL {
 				array_push($weatherDayItems, new WeatherDay(strtotime((string)$value['from']), (string)$value->symbol['name'], (string)$value->temperature['value'], (string)$value['period'], $value->symbol['var']));
 			}
 		
+		} else {
+			throw new Exception("Search api error.");
 		} 
 
 		//Dra ut korrekta perioder
