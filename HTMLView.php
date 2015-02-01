@@ -31,7 +31,7 @@ class HTMLView {
 		</div>
 		<iframe id='manifest_iframe_hack' 
 		  style='display: none;' 
-		  src='temporary_manifest_hack.html'>
+		  src='manifest_iframe_hack.html'>
 		</iframe> 
 	</body>
 	
