@@ -85,23 +85,23 @@ class WeatherView {
 			$startPageChunk = "
 <div class='col-sm-4'>
 	{$this->getUserFavouriteMarkup()}
+	<div id='signInOutTool'>
+		You are signed in. <a href='logout.php'>Sign Out</a>
+	</div>
 </div>
 <div class='col-sm-8' id='midSection'>
-<div id='signInOutTool'>
-	You are signed in. <a href='logout.php'>Sign Out</a>
-</div>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
-		<h1>!!!</h1>
 	</div>
-	<div>
+	<div id='searchTools'>
 		<form action='?citySearch' method='POST'>
 			<input type='text' id='cityInput' name='searchQueryCity'>
 			<input type='submit' value='Sök' id='submitButton'>
 		</form>
+		$resultData
 	</div>
 </div>
-$resultData
+
 <div id='map-canvas'></div>
 </div>
 ";
@@ -109,11 +109,11 @@ $resultData
 
 			$startPageChunk = "
 <div class='col-sm-4'>
-</div>
-<div class='col-sm-4'>
 <div id='signInOutTool'>
 	<a href='{$this->weatherModel->auth->getAuthUrl()}'>Sign in with Google</a>
 </div>
+</div>
+<div class='col-sm-4'>
 <div class='centerizedContent'>
 	<div id='meny' class='centerizedContent'>
 		<h1>!!!</h1>
@@ -169,11 +169,17 @@ $resultData
 
 	public function showStartPageMultipleResults($retrievedCities) {
 
-		$markup = "<div>Multiple cities matched your search!</div>";
+				$markup = "
+<div id='searchResultChunk'>
+<div class='weatherReportItem'>";
+
+		$markup .= "<div>Multiple cities matched your search!</div>";
 
 		foreach ($retrievedCities as $city) {
 			$markup .="<div><a href='?userPickFromMultiple=$city->geonameId'>" . $city->toponymName . " " . $city->muncipName . " " . $city->provinceName . "</a></div>";
 		}
+
+		$markup .= "</div></div>";
 
 		return $this->getPageFoundation($markup);
 	}
@@ -184,7 +190,9 @@ $resultData
 		$geonameId = $weatherReport->city->geonameId;
 
 		
-		$markup = "<div>Here you go!</div>";
+		$markup = "
+<div id='searchResultChunk'>
+	<!--<div>Here you go!</div>-->";
 
 		foreach ($dayItems as $key => $day) {
 			//$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
@@ -194,6 +202,8 @@ $resultData
 		if($this->weatherModel->isUserLoggedIn()) {
 			$markup .= "<a href='?saveAsFavourite=$geonameId'>Spara som favorit!</a>";
 		}
+
+		$markup .= "</div>";
 
 		return $this->getPageFoundation($markup);
 

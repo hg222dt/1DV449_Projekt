@@ -31,9 +31,6 @@ class HTMLView {
 		  src='manifest_iframe_hack.html'>
 		</iframe> 
 	</body>
-	
-	
-
 	  <script>
 	  	// Check if a new cache is available on page load.
 		window.addEventListener('load', function(e) {
