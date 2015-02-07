@@ -17,16 +17,13 @@ class HTMLView {
 <html>
 	<head>
 		<title>VadfanblirdetförväderPUNKTse</title>
-
 		<link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
 		<link rel='stylesheet' type='text/css' href='./css/styles.css'>
-
-
+		<script type='text/javascript'src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBRAo9RNuLIHeS0XT9N0qbLOJbeF3PeIA0'></script>
 	</head>
 	<body>
 		<div id='status'></div>
 		<div class='container' style='height:100%'>
-			
 			$body
 		</div>
 		<iframe id='manifest_iframe_hack' 
@@ -53,9 +50,9 @@ class HTMLView {
 		}, false);
 	  </script>
 	  <script src='scripts/script.js'></script>
+	  <script src='scripts/mapScript.js'></script>
 	  <script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
       <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'></script>
-	  
 	</html>
 		";
 	}

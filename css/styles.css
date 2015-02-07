@@ -14,3 +14,16 @@
 	padding-bottom: 10px;
 	padding-top: 10px;
 }
+
+#map-canvas { 
+	height: 100%;
+}
+
+#midSection {
+	height: 100%; 
+	background-color: lightgray; 	
+}
+
+body, html {
+	height: 100%;
+}

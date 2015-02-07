@@ -86,7 +86,7 @@ class WeatherView {
 <div class='col-sm-4'>
 	{$this->getUserFavouriteMarkup()}
 </div>
-<div class='col-sm-4' id='midSection'>
+<div class='col-sm-8' id='midSection'>
 <div id='signInOutTool'>
 	You are signed in. <a href='logout.php'>Sign Out</a>
 </div>
@@ -102,9 +102,9 @@ class WeatherView {
 	</div>
 </div>
 $resultData
+<div id='map-canvas'></div>
 </div>
-<div class='col-sm-4'></div>";
-
+";
 		} else {
 
 			$startPageChunk = "
@@ -127,7 +127,9 @@ $resultData
 </div>
 $resultData
 </div>
-<div class='col-sm-4'></div>";
+<div class='col-sm-4' id='right_wing'>
+	<div id='map-canvas'></div>
+</div>";
 
 		}
 
