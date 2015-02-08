@@ -152,9 +152,6 @@ class WeatherModel {
 		$jsonString = "";
 
 
-		//$metaData = array('responseType' => 'multipleResults');
-
-
 		$mainArray = array('responseType' => 'multipleResults', 'results' => $array);
 
 		$mainArray = json_encode($mainArray);
@@ -176,6 +173,10 @@ class WeatherModel {
 
 		return json_encode($output);
 */
+	}
+
+	public function getJsonResultNoMatch() {
+		return json_encode(array('responseType' => "noresult" ));
 	}
 
 	public function logUserIn($loginParam) {

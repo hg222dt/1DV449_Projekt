@@ -127,7 +127,7 @@ class WeatherController {
 
 					} else {
 						//Returnera "No-match"
-						return;
+						return$this->weatherModel->getJsonResultNoMatch();
 					}
 
 					break;

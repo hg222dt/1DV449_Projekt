@@ -110,13 +110,6 @@ class WeatherView {
 	<div id='meny' class='centerizedContent'>
 	</div>
 	<div id='searchTools'>
-		<!--
-		<form action='?citySearch' method='POST'>
-			<input type='text' id='cityInput' name='searchQueryCity'>
-			<input type='submit' value='Sök' id='submitButton'>
-		</form>
-		-->
-
 		<div id='ajaxSearchTool'>
 			<input type='text' id='cityInput' name='searchQueryCity'>
 			<input class='btn btn-primary' type='button' id='buttonSendQuery' value='Search' />
@@ -144,14 +137,6 @@ class WeatherView {
 		<h1>!!!</h1>
 	</div>
 	<div>
-
-		<!--
-		<form action='?citySearch' method='POST'>
-			<input type='text' id='cityInput' name='searchQueryCity'>
-			<input type='submit' value='Sök' id='submitButton'>
-		</form>
-		-->
-
 		<div id='ajaxSearchTool'>
 			<input type='text' id='cityInput' name='searchQueryCity'>
 			<input class='btn btn-primary' type='button' id='buttonSend' value='Search' />

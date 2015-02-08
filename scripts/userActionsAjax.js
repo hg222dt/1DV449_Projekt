@@ -17,12 +17,66 @@ WESE.ajaxTest = function() {
 }
 
 
+
 WESE.sendForm = function() {
     
     $.post('ajaxHandler.php', { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value}, 
         function(returnedData){
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
+
+            console.log(returnedData);
+
+            var data = JSON.parse(returnedData);
+
+            if(data.responseType === "multipleResults") {
+                WESE.createMultipleResultsDiv(data.results);
+            } else if (data.responseType === "noresult") {
+                WESE.createNoResultResult();
+            } else {
+                 WESE.createWeatherItems(data);
+             }
+    });
+}
+
+
+WESE.createNoResultResult = function() {
+
+
+
+    var encapsDiv = document.createElement('div');
+
+    encapsDiv.setAttribute('id', 'searchResultChunk')
+
+
+    var divItem = document.createElement('div');       
+    divItem.className = 'weatherTitleReportItem'; 
+
+    var textTag = document.createElement('h3');
+
+    var textNode = document.createTextNode("Oooups, vi hittade inget på din sökning.");
+
+    textTag.appendChild(textNode);
+    divItem.appendChild(textTag);
+
+
+    encapsDiv.appendChild(divItem);
+
+    WESE.pushToDocument(encapsDiv);
+
+}
+
+
+WESE.sendPickOneCityForm = function(geonameId) {
+    
+
+
+    $.get('ajaxHandler.php', { AJAX_USER_PICK_FROM_MULTIPLE: "", userPickFromMultiple: geonameId}, 
+        function(returnedData){
+             //Skapa väderrapports-taggar
+             //Sätt in dem i dokumentet.
+
+             console.log(returnedData);
 
             var data = JSON.parse(returnedData);
 
@@ -33,6 +87,7 @@ WESE.sendForm = function() {
              }
     });
 }
+
 
 
 WESE.createMultipleResultsDiv = function(resultsData) {
@@ -50,13 +105,19 @@ WESE.createMultipleResultsDiv = function(resultsData) {
     divItem.className = 'weatherReportItem';
 
 
-
     resultsData.forEach(function(item) {
 
-
-
         var cityName = document.createElement('a');
-        cityName.setAttribute('href', item.geonameId);
+        cityName.setAttribute('href', '#');
+
+        cityName.onclick = function() {
+            var geonameId = item.geonameId;
+
+            WESE.sendPickOneCityForm(geonameId);
+
+        }
+
+
         var cityNameText = document.createTextNode(item.toponymName);
 
         var municipName = document.createElement('p');
@@ -86,8 +147,6 @@ WESE.createWeatherItems = function(data) {
     var city = data['city'];
 
     var weatherItemDivs = [];
-
-
 
 
     var encapsDiv = document.createElement('div');

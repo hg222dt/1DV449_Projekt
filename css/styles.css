@@ -29,6 +29,7 @@
 
 #map-canvas { 
 	height: 100%;
+	position: fixed;
 }
 
 #midSection {

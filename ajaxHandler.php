@@ -5,6 +5,8 @@
 
 	$weatherController = new WeatherController();
 
-	$_GET[$_POST['action']] = "";
-
+	if(key($_GET) == null) {
+		$_GET[$_POST['action']] = "";
+	}
+	
 	echo $weatherController->doControll();
