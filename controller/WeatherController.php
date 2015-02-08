@@ -97,6 +97,69 @@ class WeatherController {
 					$this->weatherModel->saveAsFavourite($geonameId);
 
 					return $this->weatherView->showStartPage();
+					break;
+
+
+				case WeatherView::AJAX_USER_STANDARD_SEARCH:
+
+
+					//Ska returnera json-resultat från en sökning, till webbläsaren.
+
+					$cityDataArray = $this->weatherModel->checkCityResultFromQuery($this->weatherView->getPostedQuery());
+
+					$cityAmount = count($cityDataArray);
+
+					if($cityAmount>1) {
+						//Visa flervalsalternativ
+
+						return $this->weatherModel->convertArrayWithObjectsToJson($cityDataArray); 
+
+					} elseif($cityAmount == 1) {
+						try {
+							$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
+						} catch (Exception $e) {
+							//returnera felmeddelande
+							return;
+						}
+
+						//Returnera json-resultat från väderrapporten.
+						return $this->weatherModel->convertObjectToJson($weatherReport);
+
+					} else {
+						//Returnera "No-match"
+						return;
+					}
+
+					break;
+
+
+				case WeatherView::AJAX_USER_PICK_FROM_MULTIPLE:
+
+					$cityDataArray = array();
+
+					$cityDataArray[0] = $this->weatherModel->getLatestChosenCitySession($this->weatherView->getRequestedId());
+
+					try{
+						$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
+					} catch (Exception $e) {
+						//returnera felmeddelande
+						return;
+					}
+
+					//Returnera json-resultat från väderrapporten.
+
+					return $this->weatherModel->convertObjectToJson($weatherReport);
+					break;
+
+
+				case WeatherView::AJAX_TEST:
+
+					$jsonTestSnippet = json_encode(array("test"=> "sucess"), JSON_PRETTY_PRINT);
+
+					return $jsonTestSnippet;
+					break;
+
+
 
 				default:
 

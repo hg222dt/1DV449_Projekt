@@ -15,5 +15,4 @@ class WeatherDay {
 		$this->period = $period;
 		$this->symbolVar = $symbolVar;
 	}
-
 }

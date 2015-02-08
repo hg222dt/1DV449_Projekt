@@ -11,11 +11,9 @@
 
 class WeatherModel {
 
-
 	public $weatherApiHandler;
 	private $userDAL;
 	public $auth;
-
 
 	public function __construct() {
 		$this->weatherApiHandler = new WeatherApiHandler();
@@ -143,6 +141,41 @@ class WeatherModel {
 
 		$this->userDAL->saveAsFavourite($userId, $cityId);
 
+	}
+
+	public function convertObjectToJson($object) {
+		return json_encode($object);
+	}
+
+	public function convertArrayWithObjectsToJson($array) {
+
+		$jsonString = "";
+
+
+		//$metaData = array('responseType' => 'multipleResults');
+
+
+		$mainArray = array('responseType' => 'multipleResults', 'results' => $array);
+
+		$mainArray = json_encode($mainArray);
+
+		return $mainArray;
+
+/*
+		foreach ($array as $key => $object) {
+			$jsonString .= json_encode($object);
+		}
+
+		return $jsonString;
+*/
+/*
+		$output = array();
+		foreach($array as $v) {
+		    $output[key($v)] = current($v);
+		}
+
+		return json_encode($output);
+*/
 	}
 
 	public function logUserIn($loginParam) {

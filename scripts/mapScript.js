@@ -1,14 +1,14 @@
 "use strict";
 
-var MAPSCRIPT = MAPSCRIPT || {};
+var WESE = WESE || {};
 
 
 
-MAPSCRIPT.initialize = function() {
-	MAPSCRIPT.createMap();
+WESE.initializeMap = function() {
+	WESE.createMap();
 }
 
-MAPSCRIPT.createMap = function() {
+WESE.createMap = function() {
 
 	var myLatlng = new google.maps.LatLng(62.88722932,17.91876062);
 
@@ -71,6 +71,6 @@ MAPSCRIPT.createMap = function() {
 }
 
 
-window.onload = MAPSCRIPT.initialize;
+//window.onload = MAPSCRIPT.initializeMap;
 
 

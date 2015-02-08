@@ -17,6 +17,10 @@ class WeatherView {
 	const ACTION_USER_LOG_OUT = "userLogOut";
 	const ACTION_SAVE_AS_FAVOURITE = "saveAsFavourite";
 
+	const AJAX_USER_STANDARD_SEARCH = "AJAX_USER_STANDARD_SEARCH";
+	const AJAX_USER_PICK_FROM_MULTIPLE = "AJAX_USER_PICK_FROM_MULTIPLE";
+	const AJAX_TEST = "AJAX_TEST";
+
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
 	private $weatherModel;
@@ -52,6 +56,18 @@ class WeatherView {
 
 			case WeatherView::ACTION_USER_LOG_OUT:
 				return WeatherView::ACTION_USER_LOG_OUT;
+				break;
+
+			case WeatherView::AJAX_USER_STANDARD_SEARCH:
+				return WeatherView::AJAX_USER_STANDARD_SEARCH;
+				break;
+
+			case WeatherView::AJAX_USER_PICK_FROM_MULTIPLE:
+				return WeatherView::AJAX_USER_PICK_FROM_MULTIPLE;
+				break;
+
+			case WeatherView::AJAX_TEST:
+				return WeatherView::AJAX_TEST;
 				break;
 		}
 	}
@@ -94,11 +110,20 @@ class WeatherView {
 	<div id='meny' class='centerizedContent'>
 	</div>
 	<div id='searchTools'>
+		<!--
 		<form action='?citySearch' method='POST'>
 			<input type='text' id='cityInput' name='searchQueryCity'>
 			<input type='submit' value='Sök' id='submitButton'>
 		</form>
-		$resultData
+		-->
+
+		<div id='ajaxSearchTool'>
+			<input type='text' id='cityInput' name='searchQueryCity'>
+			<input class='btn btn-primary' type='button' id='buttonSendQuery' value='Search' />
+		</div>
+		<div id='searchResultArea'>
+			$resultData
+		</div>
 	</div>
 </div>
 
@@ -119,10 +144,18 @@ class WeatherView {
 		<h1>!!!</h1>
 	</div>
 	<div>
+
+		<!--
 		<form action='?citySearch' method='POST'>
 			<input type='text' id='cityInput' name='searchQueryCity'>
 			<input type='submit' value='Sök' id='submitButton'>
 		</form>
+		-->
+
+		<div id='ajaxSearchTool'>
+			<input type='text' id='cityInput' name='searchQueryCity'>
+			<input class='btn btn-primary' type='button' id='buttonSend' value='Search' />
+		</div>
 	</div>
 </div>
 $resultData
@@ -194,13 +227,18 @@ $resultData
 <div id='searchResultChunk'>
 	<!--<div>Here you go!</div>-->";
 
+
+		//Lägg in stadsInfo och spara favorit
+
+		if($this->weatherModel->isUserLoggedIn()) {
+			$markup .= "<div class='weatherTitleReportItem'><h3>{$weatherReport->city->toponymName}</h3> <a href='?saveAsFavourite=$geonameId' id='save_fav_link'>Spara som favorit!</a></div>";
+		} else {
+			$markup .= "<div class='weatherTitleReportItem'>{$weatherReport->city->toponymName}</div>";
+		}
+
 		foreach ($dayItems as $key => $day) {
 			//$markup .= "<div>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='http://symbol.yr.no/grafikk/sym/b38/" . $day->symbolVar . ".png'></div>";
 			$markup .= "<div class='weatherReportItem'>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='./images/" . $day->symbolVar . ".png'></div>";
-		}
-
-		if($this->weatherModel->isUserLoggedIn()) {
-			$markup .= "<a href='?saveAsFavourite=$geonameId'>Spara som favorit!</a>";
 		}
 
 		$markup .= "</div>";

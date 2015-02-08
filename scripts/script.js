@@ -2,10 +2,21 @@
 
 var WESE = WESE || {};
 
+WESE.init = function() {
 
-			
+  //Gör ajax-anrop till servern, och se om användaren har blivit online.
+
+  WESE.updateOnlineStatus('load');
+  document.body.addEventListener('offline', function () { WESE.updateOnlineStatus('offline') }, false);
+  document.body.addEventListener('online', function () { WESE.updateOnlineStatus('online') }, false);
+
+  WESE.initializeMap();
+
+  document.getElementById("buttonSendQuery").onclick = function(e) {WESE.sendForm(); return false;}
+  WESE.textField = document.getElementById("cityInput");
 
 
+}
 
 WESE.updateOnlineStatus = function(msg) {
   var offlineMessage = 'Ouups! Någon har klippt linan. Eftersom att du inte har internet kan vi inte göra sökningar åt sig för tillfället.';
@@ -33,16 +44,5 @@ WESE.updateOnlineStatus = function(msg) {
 }
 
 
-WESE.loaded = function() {
 
-  //Gör ajax-anrop till servern, och se om användaren har blivit online.
-
-  WESE.updateOnlineStatus('load');
-  document.body.addEventListener('offline', function () { WESE.updateOnlineStatus('offline') }, false);
-  document.body.addEventListener('online', function () { WESE.updateOnlineStatus('online') }, false);
-
-
-}
-
-
-window.onload = WESE.loaded;
+window.onload = WESE.init;
