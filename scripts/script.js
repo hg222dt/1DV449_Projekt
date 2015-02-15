@@ -12,8 +12,10 @@ WESE.init = function() {
 
   WESE.initializeMap();
 
-  document.getElementById("buttonSendQuery").onclick = function(e) {WESE.sendForm(); return false;}
+  document.getElementById("buttonSendQuery").onclick = function(e) {WESE.postStandardSearch(); return false;}
   WESE.textField = document.getElementById("cityInput");
+
+  WESE.loadFavouritesList();
 
 
 }

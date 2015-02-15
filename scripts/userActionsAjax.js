@@ -18,14 +18,12 @@ WESE.ajaxTest = function() {
 
 
 
-WESE.sendForm = function() {
+WESE.postStandardSearch = function() {
     
     $.post('ajaxHandler.php', { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value}, 
         function(returnedData){
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
-
-            console.log(returnedData);
 
             var data = JSON.parse(returnedData);
 
@@ -34,31 +32,45 @@ WESE.sendForm = function() {
             } else if (data.responseType === "noresult") {
                 WESE.createNoResultResult();
             } else {
-                 WESE.createWeatherItems(data);
+                 WESE.createWeatherItems(data, false);
              }
+    });
+}
+
+WESE.postSearchGeonameId = function(geonameId, callback) {
+    
+    $.post('ajaxHandler.php', { action: "AJAX_USER_SEARCH_GEONAME_ID", geonameId: geonameId}, 
+        function(returnedData){
+             //Skapa väderrapports-taggar
+             //Sätt in dem i dokumentet.
+
+            var data = JSON.parse(returnedData);
+
+            callback(data);
     });
 }
 
 
 WESE.createNoResultResult = function() {
 
-
-
     var encapsDiv = document.createElement('div');
 
     encapsDiv.setAttribute('id', 'searchResultChunk')
 
-
     var divItem = document.createElement('div');       
     divItem.className = 'weatherTitleReportItem'; 
 
-    var textTag = document.createElement('h3');
+    var hTag = document.createElement('h3');
+    var hNode = document.createTextNode("Fel fel fel fel fel!");
 
-    var textNode = document.createTextNode("Oooups, vi hittade inget på din sökning.");
+    var textTag = document.createElement('p');
+    var textNode = document.createTextNode('Vi hittade inget.');
 
     textTag.appendChild(textNode);
-    divItem.appendChild(textTag);
+    hTag.appendChild(hNode);
 
+    divItem.appendChild(hTag);
+    divItem.appendChild(textTag);f
 
     encapsDiv.appendChild(divItem);
 
@@ -69,32 +81,25 @@ WESE.createNoResultResult = function() {
 
 WESE.sendPickOneCityForm = function(geonameId) {
     
-
-
     $.get('ajaxHandler.php', { AJAX_USER_PICK_FROM_MULTIPLE: "", userPickFromMultiple: geonameId}, 
         function(returnedData){
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
-
-             console.log(returnedData);
 
             var data = JSON.parse(returnedData);
 
             if(data.responseType === "multipleResults") {
                 WESE.createMultipleResultsDiv(data.results);
             } else {
-                 WESE.createWeatherItems(data);
+                 WESE.createWeatherItems(data, false);
              }
     });
 }
 
 
-
 WESE.createMultipleResultsDiv = function(resultsData) {
 
     //Drar ut dagarna from vår response
-
-    console.log(resultsData);
 
     var encapsDiv = document.createElement('div');
 
@@ -114,9 +119,7 @@ WESE.createMultipleResultsDiv = function(resultsData) {
             var geonameId = item.geonameId;
 
             WESE.sendPickOneCityForm(geonameId);
-
         }
-
 
         var cityNameText = document.createTextNode(item.toponymName);
 
@@ -128,18 +131,15 @@ WESE.createMultipleResultsDiv = function(resultsData) {
         divItem.appendChild(cityName);
         divItem.appendChild(municipName);
         
-
     });
-
 
     encapsDiv.appendChild(divItem);
 
     WESE.pushToDocument(encapsDiv);
-
 }
 
 
-WESE.createWeatherItems = function(data) {
+WESE.createWeatherItems = function(data, isFavourite) {
         
     //Drar ut dagarna from vår response
 
@@ -148,13 +148,11 @@ WESE.createWeatherItems = function(data) {
 
     var weatherItemDivs = [];
 
-
     var encapsDiv = document.createElement('div');
 
-    encapsDiv.setAttribute('id', 'searchResultChunk')
+    encapsDiv.setAttribute('id', 'searchResultChunk');
 
-    encapsDiv.appendChild(WESE.createCityDiv(city));
-
+    encapsDiv.appendChild(WESE.createCityDiv(city, isFavourite));
 
 
     dayItems.forEach(function(item) {
@@ -173,9 +171,9 @@ WESE.createWeatherItems = function(data) {
 
         var symbolVarText;
 
-        symbolImage.setAttribute('src', "./images/" + item.symbolVar + ".png");        
-
         divItem.appendChild(symbolNameText);
+
+        symbolImage.setAttribute('src', "./images/" + item.symbolVar + ".png");
 
         divItem.appendChild(symbolImage);
 
@@ -200,7 +198,7 @@ WESE.pushToDocument = function(element) {
 
 }
 
-WESE.createCityDiv = function(city) {
+WESE.createCityDiv = function(city, isFavourite) {
 
     var divItem = document.createElement('div');       
     divItem.className = 'weatherTitleReportItem'; 
@@ -210,10 +208,188 @@ WESE.createCityDiv = function(city) {
     var cityNameText = document.createTextNode(city.toponymName);
 
     cityName.appendChild(cityNameText);
+
     divItem.appendChild(cityName);
+
+
+    var favToolLink = document.createElement('a');
+
+    favToolLink.setAttribute('id', 'favLinkTool');
+
+
+    favToolLink = WESE.createFavToolLink(city, isFavourite, favToolLink);
+
+    divItem.appendChild(favToolLink);
 
     return divItem;
 
+}
+
+WESE.createFavToolLink = function(city, isFavourite, favToolLink) {
+    if(isFavourite) {
+
+        var deleteNameText = document.createTextNode("Ta bort som favorit");
+
+        favToolLink.appendChild(deleteNameText);
+
+        favToolLink.onclick = function () {
+
+            WESE.deleteCityFromFavourites(city.geonameId, function() {
+                WESE.loadFavouritesList();
+                document.getElementById('favLinkTool').innerHTML = "";
+                WESE.createFavToolLink(city, false, favToolLink);
+            });
+        };
+
+    } else {
+
+        var saveNameText = document.createTextNode("Spara som favorit");
+
+        favToolLink.appendChild(saveNameText);
+
+        favToolLink.onclick = function () {
+            WESE.saveCityToFavourite(city.geonameId);
+            document.getElementById('favLinkTool').innerHTML = "";
+            WESE.createFavToolLink(city, true, favToolLink);
+        };
+    }
+
+    return favToolLink;
+}
+
+
+WESE.deleteCityFromFavourites = function(geonameId, callback) {
+
+    $.post('ajaxHandler.php', { action: "AJAX_USER_DELETE_FAVOURITE", geonameId: geonameId}, 
+        function(result){
+            console.log(result);
+            callback();
+    });
+
+}
+
+
+
+WESE.setTopNotice = function(noticeText) {
+
+    //TODO
+
+    console.log(noticeText);
+
+}
+
+
+WESE.saveCityToFavourite = function (geonameId) {
+
+    WESE.saveNewCityToFavourites(geonameId, function(returnedFavourites) {
+        WESE.updateFavouritesList(returnedFavourites);
+    });
+}
+
+
+WESE.saveNewCityToFavourites = function (geonameId, updateFavouritesList) {
+
+    //Make ajax-call to server to add favourite.
+
+    $.post('ajaxHandler.php', { action: "AJAX_USER_ADD_FAVOURITE", geonameId: geonameId}, 
+
+        function(returnedFavourites){
+             //Skapa väderrapports-taggar
+             //Sätt in dem i dokumentet.
+            var report = returnedFavourites.results;
+
+            var data = JSON.parse(returnedFavourites);
+
+            if(data.responseType === "error_favourites_max_limit") {
+                WESE.setTopNotice("Max antal favoriter är uppnått! ta bort en för att lägga till en, vetja :)");
+            } else {
+                updateFavouritesList(data);
+             }
+    });
+
+}
+
+WESE.loadFavouritesList = function() {
+
+    $.post('ajaxHandler.php', { action: "AJAX_USER_GET_FAVOURITES"}, 
+
+        function(returnedFavourites){
+
+            var report = returnedFavourites.results;
+
+            var data = JSON.parse(returnedFavourites);
+
+            WESE.updateFavouritesList(data);
+    });
+}
+
+
+WESE.updateFavouritesList = function(favourites) {
+
+    //Update faveoiters list in DOM
+
+    WESE.saveFavouritesToLocalStorage(favourites);
+
+    var cities = favourites.results;
+
+    var favouriteList = document.getElementById('favouriteList');
+
+    favouriteList.innerHTML = "";
+
+    cities.forEach(function(item) {
+
+        var city = item.city;
+        var geonameId = city.geonameId;
+
+        var cityDiv = document.createElement('div');
+
+        var cityName = document.createElement('a');
+
+        cityName.setAttribute('href', '#');
+
+        cityName.onclick = function(e) {
+            WESE.postSearchGeonameId(geonameId, function(data) {
+
+                if (data.responseType === "noresult") {
+                    WESE.createNoResultResult();
+                } else {
+                    WESE.createWeatherItems(data, true);
+                }
+
+            });
+        }
+
+        var cityNameText = document.createTextNode(city.toponymName);
+
+        cityName.appendChild(cityNameText);
+        cityDiv.appendChild(cityName);
+        favouriteList.appendChild(cityDiv);
+    });
+
+}
+
+
+WESE.saveFavouritesToLocalStorage = function(favourites) {
+    //Save to Local storage
+
+    console.log(favourites);
+
+    if(WESE.supports_html5_storage()) {
+
+        localStorage.setItem("userFavourites", JSON.stringify(favourites));
+
+        var favouritesObject = localStorage.getItem("userFavourites");
+
+        console.log(favouritesObject);
+    }
+}
+
+WESE.supports_html5_storage = function () {
+      try {
+        return 'localStorage' in window && window['localStorage'] !== null;
+      } catch (e) {
+        return false;
+      }
 }
 
 

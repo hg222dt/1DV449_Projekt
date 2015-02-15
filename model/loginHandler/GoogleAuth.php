@@ -20,6 +20,7 @@ class GoogleAuth
 			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/index.php');
 //			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/signinPage.php');
 
+//			$this->client->setRedirectUri('http://www.bigmachine.se/1DV449_Projekt/index.php');
 			//$this->client->setRedirectUri('http://www.bigmachine.se/test_med_oauth/index.php');
 			$this->client->setScopes('email');
 		}

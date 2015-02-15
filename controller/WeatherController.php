@@ -129,7 +129,6 @@ class WeatherController {
 						//Returnera "No-match"
 						return$this->weatherModel->getJsonResultNoMatch();
 					}
-
 					break;
 
 
@@ -152,14 +151,52 @@ class WeatherController {
 					break;
 
 
-				case WeatherView::AJAX_TEST:
+				case WeatherView::AJAX_USER_ADD_FAVOURITE:
 
-					$jsonTestSnippet = json_encode(array("test"=> "sucess"), JSON_PRETTY_PRINT);
+					$this->weatherModel->saveAsFavourite($this->weatherView->getPostedGeonameId());
 
-					return $jsonTestSnippet;
+					$favouritesData = $this->weatherModel->getFavouritesDataUser($this->weatherView->getUserGoogleId());
+
+					$favouritesDataJson = $this->weatherModel->convertArrayWithFavouriteObjectsToJson($favouritesData);
+
+					return $favouritesDataJson;
 					break;
 
+				case WeatherView::AJAX_USER_GET_FAVOURITES:
 
+					$favouritesData = $this->weatherModel->getFavouritesDataUser($this->weatherView->getUserGoogleId());
+
+					$favouritesDataJson = $this->weatherModel->convertArrayWithFavouriteObjectsToJson($favouritesData);
+
+					return $favouritesDataJson;
+					break;
+
+				case WeatherView::AJAX_USER_SEARCH_GEONAME_ID:
+
+					$geonameId = $this->weatherView->getPostedGeonameId();
+
+					$cityDataArray = $this->weatherModel->getCitiesFromGeonameIds(array(0 => $geonameId));
+
+					try {
+						$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
+					} catch (Exception $e) {
+						//returnera felmeddelande
+						return;
+					}
+
+					return $this->weatherModel->convertObjectToJson($weatherReport);
+					break;
+
+				case WeatherView::AJAX_USER_DELETE_FAVOURITE:
+
+					$userId = $this->weatherModel->getUserIdFromGoogleId($this->weatherView->getUserGoogleId());
+
+					$geonameId = $this->weatherView->getPostedGeonameId();
+
+					$this->weatherModel->deleteFavourite($geonameId, $userId);
+
+					return;
+					break;
 
 				default:
 

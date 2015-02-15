@@ -19,7 +19,10 @@ class WeatherView {
 
 	const AJAX_USER_STANDARD_SEARCH = "AJAX_USER_STANDARD_SEARCH";
 	const AJAX_USER_PICK_FROM_MULTIPLE = "AJAX_USER_PICK_FROM_MULTIPLE";
-	const AJAX_TEST = "AJAX_TEST";
+	const AJAX_USER_ADD_FAVOURITE = "AJAX_USER_ADD_FAVOURITE";
+	const AJAX_USER_GET_FAVOURITES = "AJAX_USER_GET_FAVOURITES";
+	const AJAX_USER_SEARCH_GEONAME_ID = "AJAX_USER_SEARCH_GEONAME_ID";
+	const AJAX_USER_DELETE_FAVOURITE = "AJAX_USER_DELETE_FAVOURITE";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
@@ -66,32 +69,29 @@ class WeatherView {
 				return WeatherView::AJAX_USER_PICK_FROM_MULTIPLE;
 				break;
 
-			case WeatherView::AJAX_TEST:
-				return WeatherView::AJAX_TEST;
+			case WeatherView::AJAX_USER_ADD_FAVOURITE:
+				return WeatherView::AJAX_USER_ADD_FAVOURITE;
 				break;
+
+			case WeatherView::AJAX_USER_GET_FAVOURITES:
+				return WeatherView::AJAX_USER_GET_FAVOURITES;
+				break;
+
+			case WeatherView::AJAX_USER_SEARCH_GEONAME_ID:
+				return WeatherView::AJAX_USER_SEARCH_GEONAME_ID;
+				break;
+
+			case WeatherView::AJAX_USER_DELETE_FAVOURITE:
+				return WeatherView::AJAX_USER_DELETE_FAVOURITE;
+				break;
+
+
+
 		}
 	}
 
-	public function getUserFavouriteMarkup() 
-	{
-		$user_google_id = $_SESSION['logged_in_user_google_id'];
-			
-		$userId = $this->weatherModel->getUserIdFromGoogleId($user_google_id);
-
-		$weatherReports = $this->weatherModel->getFavourites($userId);
-		
-		$favouriteChunk = "<h3>Dina favoriter</h3>";
-
-		foreach ($weatherReports as $key => $weatherReport) {
-
-			$city = $weatherReport->city;
-
-			$name = $city->toponymName;
-
-			$favouriteChunk .= "<div>" . $name . "</div>";
-		}
-
-		return $favouriteChunk;
+	public function getUserGoogleId() {
+		return $_SESSION['logged_in_user_google_id'];
 	}
 
 	public function getPageFoundation($resultData) {
@@ -100,7 +100,9 @@ class WeatherView {
 		{
 			$startPageChunk = "
 <div class='col-sm-4'>
-	{$this->getUserFavouriteMarkup()}
+	<h3>Dina favoriter</h3>
+	<div id='favouriteList'>
+	</div>
 	<div id='signInOutTool'>
 		You are signed in. <a href='logout.php'>Sign Out</a>
 	</div>
@@ -235,6 +237,10 @@ $resultData
 	public function getPostedQuery() {
 
 		return $_POST['searchQueryCity'];
+	}
+
+	public function getPostedGeonameId() {
+		return $_POST['geonameId'];
 	}
 
 	public function getParam() {

@@ -135,6 +135,22 @@ class WeatherModel {
 		return $weatherReports;
 	}
 
+
+	public function getFavouritesDataUser($user_google_id) {
+	
+		$userId = $this->getUserIdFromGoogleId($user_google_id);
+
+		$weatherReports = $this->getFavourites($userId);
+
+		return $weatherReports;
+	}
+
+
+	public function deleteFavourite($geonameId, $userId) {
+		$this->userDAL->deleteFavourite($geonameId, $userId);
+	}
+
+
 	public function saveAsFavourite($cityId) {
 
 		$userId = $this->getUserIdFromGoogleId($_SESSION['logged_in_user_google_id']);
@@ -149,31 +165,24 @@ class WeatherModel {
 
 	public function convertArrayWithObjectsToJson($array) {
 
-		$jsonString = "";
-
-
 		$mainArray = array('responseType' => 'multipleResults', 'results' => $array);
 
 		$mainArray = json_encode($mainArray);
 
 		return $mainArray;
-
-/*
-		foreach ($array as $key => $object) {
-			$jsonString .= json_encode($object);
-		}
-
-		return $jsonString;
-*/
-/*
-		$output = array();
-		foreach($array as $v) {
-		    $output[key($v)] = current($v);
-		}
-
-		return json_encode($output);
-*/
 	}
+
+
+	public function convertArrayWithFavouriteObjectsToJson($array) {
+
+		$mainArray = array('responseType' => 'success', 'results' => $array);
+
+		$mainArray = json_encode($mainArray);
+
+		return $mainArray;
+
+	}
+
 
 	public function getJsonResultNoMatch() {
 		return json_encode(array('responseType' => "noresult" ));

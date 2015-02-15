@@ -113,6 +113,41 @@ class UserDAL {
 	}
 
 
+
+	public function deleteFavourite($geonameId, $userId) {
+
+		$geonameId = (int) $geonameId;
+		$userId = (int) $userId;
+
+		$db = null;
+
+		try {
+			$db = new PDO("sqlite:database.db");
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		}
+		catch(PDOEception $e) {
+			die("Something went wrong -> " .$e->getMessage());
+		}
+
+
+		$q = "DELETE FROM Favourites WHERE GeonameId = $geonameId AND UserId = $userId";
+
+		$result;
+		$stm;
+		try {
+			$stm = $db->prepare($q);
+			$stm->execute();
+			$result = $stm->fetchAll();
+		}
+		catch(PDOException $e) {
+			echo("Error creating query6: " .$e->getMessage());
+			return false;
+		}
+	}
+
+
+
+
 	public function doesFavouriteExist($userId, $geonameId) {
 
 		try {
