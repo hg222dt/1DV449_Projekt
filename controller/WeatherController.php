@@ -198,6 +198,10 @@ class WeatherController {
 					return;
 					break;
 
+				case WeatherView::AJAX_IS_USER_SIGNED_IN:
+					return $this->weatherModel->isUserLoggedInJson();
+					break;
+
 				default:
 
 					return $this->weatherView->showStartPage();

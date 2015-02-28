@@ -4,6 +4,18 @@ var WESE = WESE || {};
 
 WESE.init = function() {
 
+  if(WESE.supports_html5_storage()) {
+      WESE.isUserSignedIn(function(userSignedIn) {
+      localStorage.setItem("userSignedIn", userSignedIn);
+
+      if(localStorage.getItem("UserSignedOutInOfflineMode") == 1) {
+        localStorage.setItem("UserSignedOutInOfflineMode", "");
+        //Logga ut anävndaren
+        window.location.replace("logout.php");
+      }
+    });
+  }
+
   //Gör ajax-anrop till servern, och se om användaren har blivit online.
 
   WESE.updateOnlineStatus('load');
@@ -16,9 +28,8 @@ WESE.init = function() {
   WESE.textField = document.getElementById("cityInput");
 
   WESE.loadFavouritesList();
-
-
 }
+
 
 WESE.updateOnlineStatus = function(msg) {
   var offlineMessage = 'Ouups! Någon har klippt linan. Eftersom att du inte har internet kan vi inte göra sökningar åt sig för tillfället.';

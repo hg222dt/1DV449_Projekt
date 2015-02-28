@@ -3,14 +3,15 @@
 var WESE = WESE || {};
 
 
-WESE.ajaxTest = function() {
+WESE.isUserSignedIn = function(callback) {
     $.ajax({
         type: "GET",
         url: "ajaxHandler.php",
-        data: "AJAX_TEST",
+        data: "AJAX_IS_USER_SIGNED_IN",
         dataType : "json"
         }).done(function(data) {
-            console.log(data);
+            data = JSON.parse(data);
+            callback(data.isUserLoggedIn);
     }).fail(function (jqXHR, textStatus) {
         console.log("Faail: " + textStatus);
     });
@@ -262,7 +263,6 @@ WESE.deleteCityFromFavourites = function(geonameId, callback) {
 
     $.post('ajaxHandler.php', { action: "AJAX_USER_DELETE_FAVOURITE", geonameId: geonameId}, 
         function(result){
-            console.log(result);
             callback();
     });
 
@@ -274,7 +274,6 @@ WESE.setTopNotice = function(noticeText) {
 
     //TODO
 
-    console.log(noticeText);
 
 }
 
@@ -372,15 +371,17 @@ WESE.updateFavouritesList = function(favourites) {
 WESE.saveFavouritesToLocalStorage = function(favourites) {
     //Save to Local storage
 
-    console.log(favourites);
-
     if(WESE.supports_html5_storage()) {
 
         localStorage.setItem("userFavourites", JSON.stringify(favourites));
 
         var favouritesObject = localStorage.getItem("userFavourites");
+    }
+}
 
-        console.log(favouritesObject);
+WESE.deleteFavourites = function() {
+    if(WESE.supports_html5_storage()) {
+        localStorage.setItem("userFavourites", JSON.stringify({}));
     }
 }
 

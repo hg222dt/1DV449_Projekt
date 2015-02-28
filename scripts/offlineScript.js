@@ -2,7 +2,7 @@
 
 var WESE = WESE || {};
 
-WESE.offlineInit = function() {
+// WESE.offlineInit = function() {
 
   //Gör ajax-anrop till servern, och se om användaren har blivit online.
 /*
@@ -17,18 +17,62 @@ WESE.offlineInit = function() {
 
   WESE.loadFavouritesList();
 */
-}
+// }
 
 
 WESE.offlineInit = function() {
-  var favouritesObject = localStorage.getItem("userFavourites");
 
-  favouritesObject = JSON.parse(favouritesObject);
+  var userSignedIn;
 
-  WESE.renderFavouritesList(favouritesObject);
+  if(WESE.supports_html5_storage()) {
+    userSignedIn = localStorage.getItem("userSignedIn");
+  }
+
+  if (userSignedIn == 1) {
+    var signOutLink = document.getElementById("offlineSignoutLink");
+
+    signOutLink.onclick = function(e) {
+      localStorage.setItem("userSignedIn", "");
+      localStorage.setItem("UserSignedOutInOfflineMode", 1);
+      localStorage.setItem("userFavourites", "{}");
+      location.reload();
+    }
+
+
+    var favouritesObject = localStorage.getItem("userFavourites");
+    favouritesObject = JSON.parse(favouritesObject);
+    WESE.renderFavouritesList(favouritesObject);
+
+  } else {
+    WESE.renderOfflineSignedOutPage();
+  }
+}
+
+
+
+WESE.supports_html5_storage = function () {
+  try {
+    return 'localStorage' in window && window['localStorage'] !== null;
+  } catch (e) {
+    return false;
+    }
+}
+
+
+WESE.renderOfflineSignedOutPage = function() {
+
+  var offlineText = document.getElementById('offlineText');
+
+  offlineText.innerHTML = "Du verkar vara offline för tillfället.";
+
+
+  var div = document.getElementById("favouritesDiv");
+
+  favouritesDiv.innerHTML = "";
 
 
 }
+
 
 WESE.renderFavouritesList = function(favouritesObject) {
   //console.log(favouritesObject.results);
@@ -49,17 +93,7 @@ WESE.renderFavouritesList = function(favouritesObject) {
     cityName.setAttribute('href', '#');
 
     cityName.onclick = function(e) {
-      /*
-        WESE.postSearchGeonameId(geonameId, function(data) {
-
-            if (data.responseType === "noresult") {
-                WESE.createNoResultResult();
-            } else {
-                WESE.createWeatherItems(data, true);
-            }
-
-        });
-*/
+      WESE.createWeatherItems(item);
     }
 
     var cityNameText = document.createTextNode(city.toponymName);
@@ -70,6 +104,81 @@ WESE.renderFavouritesList = function(favouritesObject) {
 
   });
 }
+
+
+
+WESE.createWeatherItems = function(data) {
+        
+    //Drar ut dagarna from vår response
+
+    var dayItems = data['dayItems'];
+    var city = data['city'];
+
+    var weatherItemDivs = [];
+
+    var encapsDiv = document.createElement('div');
+
+    encapsDiv.setAttribute('id', 'searchResultChunk');
+
+    encapsDiv.appendChild(WESE.createCityDiv(city));
+
+
+    dayItems.forEach(function(item) {
+
+        if(typeof item.symbolVar === 'object') {
+            item.symbolVar = item.symbolVar[0];
+        }
+
+        var divItem = document.createElement('div');
+
+        divItem.className = 'weatherReportItem';
+
+        var symbolNameText = document.createTextNode(item.symbolName);
+
+        var symbolImage = document.createElement('img');
+
+        var symbolVarText;
+
+        divItem.appendChild(symbolNameText);
+
+        symbolImage.setAttribute('src', "./images/" + item.symbolVar + ".png");
+
+        divItem.appendChild(symbolImage);
+
+        encapsDiv.appendChild(divItem);
+
+    });
+
+    WESE.pushToDocument(encapsDiv);
+
+}
+
+WESE.pushToDocument = function(element) {
+    var divToAppendTo = document.getElementById('searchResultArea');
+
+    divToAppendTo.innerHTML = "";
+
+    divToAppendTo.appendChild(element);
+
+}
+
+WESE.createCityDiv = function(city) {
+
+    var divItem = document.createElement('div');       
+    divItem.className = 'weatherTitleReportItem'; 
+
+    var cityName = document.createElement('h3');
+
+    var cityNameText = document.createTextNode(city.toponymName);
+
+    cityName.appendChild(cityNameText);
+
+    divItem.appendChild(cityName);
+
+    return divItem;
+
+}
+
 
 
 window.onload = WESE.offlineInit();

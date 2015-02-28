@@ -37,6 +37,11 @@
 	background-color: lightgray; 	
 }
 
+#midSectionOffline {
+	height: 100%;
+}
+
+
 body, html {
 	height: 100%;
 }
@@ -73,6 +78,18 @@ body, html {
 
 #searchResultChunk {
 	margin-top: 50px;
+}
+
+#offlineNotice {
+	width: 100%;
+	background-color: #9ED2FF;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+#offlineText {
+	text-align: center;
+	font-size: 1.2em;
 }
 
 /*

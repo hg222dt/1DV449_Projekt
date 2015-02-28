@@ -23,6 +23,7 @@ class WeatherView {
 	const AJAX_USER_GET_FAVOURITES = "AJAX_USER_GET_FAVOURITES";
 	const AJAX_USER_SEARCH_GEONAME_ID = "AJAX_USER_SEARCH_GEONAME_ID";
 	const AJAX_USER_DELETE_FAVOURITE = "AJAX_USER_DELETE_FAVOURITE";
+	const AJAX_IS_USER_SIGNED_IN = "AJAX_IS_USER_SIGNED_IN";
 
 	const MESSAGE_ERROR_FATAL = "Fatal error occured.";
 
@@ -85,7 +86,9 @@ class WeatherView {
 				return WeatherView::AJAX_USER_DELETE_FAVOURITE;
 				break;
 
-
+			case WeatherView::AJAX_IS_USER_SIGNED_IN:
+				return WeatherView::AJAX_IS_USER_SIGNED_IN;
+				break;
 
 		}
 	}

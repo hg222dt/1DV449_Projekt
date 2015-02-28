@@ -44,6 +44,14 @@ class WeatherModel {
 		return $this->auth->isLoggedIn();
 	}
 
+	public function isUserLoggedInJson() {
+		if($this->isUserLoggedIn() == 1) {
+			return json_encode('{ "isUserLoggedIn": "1" }');	
+		} else {
+			return json_encode('{ "isUserLoggedIn": "" }');
+		}
+	}
+
 	public function getUserIdFromGoogleId($user_google_id)
 	{
 		return $this->auth->getUserIdFromGoogleId($user_google_id);
