@@ -28,7 +28,7 @@ class RepositoryDAL {
 		if(isset($result[0])) {
 			$result = $result[0];
 		
-			$city = new City($result['GeonameId'], $result['Name'], $result['ToponymName'], $result['MunicipName'], $result['ProvinceName'], $result['CountryName'], $result['NextUpdate']);
+			$city = new City($result['GeonameId'], $result['Name'], $result['ToponymName'], $result['MunicipName'], $result['ProvinceName'], $result['CountryName'], $result['NextUpdate'], null, null);
 			$city->cityId = $result['CityId'];
 			return $city;
 		
@@ -100,8 +100,11 @@ class RepositoryDAL {
 		$provinceName = $city->provinceName;
 		$toponymName = $city->toponymName;
 		$muncipName = $city->muncipName;
+		$longitude = (string)$city->longitude;
+		$latitude = (string)$city->latitude;
 
-		$q = "INSERT INTO City (NextUpdate, GeonameID, Name, ToponymName, MunicipName, ProvinceName, CountryName) VALUES ($nextUpdate, $geonameId, '$cityName', '$toponymName', '$muncipName', '$provinceName', '$countryName')";
+//		$q = "INSERT INTO City (NextUpdate, GeonameID, Name, ToponymName, MunicipName, ProvinceName, CountryName) VALUES ($nextUpdate, $geonameId, '$cityName', '$toponymName', '$muncipName', '$provinceName', '$countryName')";
+		$q = "INSERT INTO City (NextUpdate, GeonameID, Name, ToponymName, MunicipName, ProvinceName, CountryName, Longitude, Latitude) VALUES ($nextUpdate, $geonameId, '$cityName', '$toponymName', '$muncipName', '$provinceName', '$countryName', '$longitude', '$latitude')";
 
 		$this->makeDatabaseRequest($q);
 

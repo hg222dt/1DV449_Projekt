@@ -60,6 +60,8 @@ class WebserviceDAL {
 		if($cityObj != null && property_exists($cityObj, 'name') && property_exists($cityObj, 'toponymName')){
 			$cityName = (string) $cityObj->name;
 			$toponymName = (string) $cityObj->toponymName;
+			$latitude = (string) $cityObj->lat;
+			$longitude =  (string) $cityObj->lng;
 		}
 
 		if($muncipObj != null && property_exists($muncipObj, 'name')){
@@ -78,14 +80,7 @@ class WebserviceDAL {
 			$countryName = (string) $countryObj->name;
 		}
 
-
-
-
-
-
-
-
-		return new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, null);
+		return new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, null, $latitude, $longitude);
 
 	}
 

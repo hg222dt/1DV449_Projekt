@@ -12,9 +12,11 @@ class City {
 	public $cityId;
 	public $nextUpdate;
 	public $existsOnDatabse;
+	public $latitude;
+	public $longitude;
 
 
-	public function __construct($geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, $nextUpdate) {
+	public function __construct($geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, $nextUpdate, $latitude, $longitude) {
 
 		$this->geonameId = $geonameId;
 		$this->cityName = $cityName;
@@ -23,5 +25,7 @@ class City {
 		$this->countryName = $countryName;
 		$this->muncipName = $muncipName;
 		$this->nextUpdate = $nextUpdate;
+		$this->latitude = $latitude;
+		$this->longitude = $longitude;
 	}
 }

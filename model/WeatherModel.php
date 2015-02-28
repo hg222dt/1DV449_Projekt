@@ -30,7 +30,6 @@ class WeatherModel {
 		$cityIdArray = $this->weatherApiHandler->searchCityId($userQuery);
 
 
-		//LÄGG TILL KOLL SÅ ATT APIET HAR LADDAT NER NÅGOT HÄR.
 
 		if(isset($_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID]) && !is_array($_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID])) {
 			$_SESSION[WeatherApiHandler::SESSION_KEY_CITY_GEONAME_ID] = array();
@@ -62,6 +61,7 @@ class WeatherModel {
 		$cityDataArray = array();
 
 		foreach ($cityIdArray as $key => $geonameId) {
+
 			//try get cityData from repository. Returns null if city sere not found in repository.
 			$city = $this->weatherApiHandler->tryGetCityDataFromRepository($geonameId);
 			
