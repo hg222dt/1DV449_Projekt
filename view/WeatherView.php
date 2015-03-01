@@ -130,7 +130,7 @@ class WeatherView {
 		
 			<div class='col-lg-6'>
 			    <div class='input-group'>
-			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad'' name='searchQueryCity' required autofocus>
+			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad' name='searchQueryCity' required autofocus>
 			      <span class='input-group-btn'>
 			        <button class='btn btn-default' id='buttonSendQuery' type='button'>Sök!</button>
 			      </span>
@@ -152,7 +152,6 @@ class WeatherView {
 
 			$startPageChunk = "
 
-
 <div class='col-sm-3'>
 	
 	<div id='signInOutTool'>
@@ -173,7 +172,7 @@ class WeatherView {
 		
 			<div class='col-lg-6'>
 			    <div class='input-group'>
-			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad'' name='searchQueryCity' required autofocus>
+			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad' name='searchQueryCity' required autofocus>
 			      <span class='input-group-btn'>
 			        <button class='btn btn-default' id='buttonSendQuery' type='button'>Sök!</button>
 			      </span>
@@ -189,50 +188,7 @@ class WeatherView {
 
 <div id='map-canvas'></div>
 </div>
-
-<!--
-
-
-
-
-
-
-
-
-<div class='col-sm-4'>
-<div id='signInOutTool'>
-	<a href='{$this->weatherModel->auth->getAuthUrl()}'>Logga in med Google</a>
-</div>
-</div>
-<div class='col-sm-4'>
-<div class='centerizedContent'>
-	<div id='meny' class='centerizedContent'>
-		<h1>!!!</h1>
-	</div>
-	<div>
-		<div id='ajaxSearchTool'>
-			
-			<input type='text' id='cityInput' name='searchQueryCity' class='form-control'>
-			<input class='btn btn-primary' type='button' id='buttonSend' value='Sök på stad' />
-
-			<div class='col-lg-6'>
-			    <div class='input-group'>
-			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad'' name='searchQueryCity' required autofocus>
-			      <span class='input-group-btn'>
-			        <button class='btn btn-default' id='buttonSendQuery' type='button'>Sök!</button>
-			      </span>
-			    </div>
-			  </div>
-		</div>
-	</div>
-</div>
-$resultData
-</div>
-<div class='col-sm-4' id='right_wing'>
-	<div id='map-canvas'></div>
-</div>
-
--->";
+";
 
 		}
 

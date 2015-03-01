@@ -63,7 +63,7 @@ WESE.renderOfflineSignedOutPage = function() {
 
   var offlineText = document.getElementById('offlineText');
 
-  offlineText.innerHTML = "Du verkar vara offline för tillfället.";
+  offlineText.innerHTML = "Du verkar vara offline för tillfället :(";
 
 
   var div = document.getElementById("favouritesDiv");
