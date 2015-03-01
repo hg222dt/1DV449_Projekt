@@ -61,7 +61,11 @@ WESE.createMap = function() {
         position: google.maps.ControlPosition.RIGHT_TOP
     },
     scaleControl: false,
-    streetViewControl: false
+    streetViewControl: false,
+
+    scrollwheel: false,
+    draggable: false
+
   };
   WESE.map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);

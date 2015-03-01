@@ -102,12 +102,19 @@ class WeatherView {
 		if($this->weatherModel->isUserLoggedIn()) 
 		{
 			$startPageChunk = "
-<div class='col-sm-4'>
-	<h3>Dina favoriter</h3>
+<div class='col-sm-3'>
+	<div id='favouritesListTitle'>
+		<h3>Dina favoriter</h3>
+	</div>
 	<div id='favouriteList'>
 	</div>
 	<div id='signInOutTool'>
-		You are signed in. <a href='logout.php'>Sign Out</a>
+		Du är inloggad. <a href='logout.php'>Logga ut</a>
+	</div>
+</div>
+<div class='col-sm-1'>
+	<div class='testRotation'>
+		<h1>ViolaVäder</h1>
 	</div>
 </div>
 <div class='col-sm-8' id='midSection'>
@@ -116,8 +123,21 @@ class WeatherView {
 	</div>
 	<div id='searchTools'>
 		<div id='ajaxSearchTool'>
-			<input type='text' id='cityInput' name='searchQueryCity'>
-			<input class='btn btn-primary' type='button' id='buttonSendQuery' value='Search' />
+<!--			
+			<input type='text' id='cityInput' name='searchQueryCity' class='form-control' required autofocus > 
+			<input class='btn btn-primary' type='button' id='buttonSendQuery' value='Sök på stad' /> 
+-->
+		
+			<div class='col-lg-6'>
+			    <div class='input-group'>
+			      <input type='text' id='cityInput' class='form-control' placeholder='Search for...'' name='searchQueryCity' required autofocus>
+			      <span class='input-group-btn'>
+			        <button class='btn btn-default' id='buttonSendQuery' type='button'>Sök!</button>
+			      </span>
+			    </div>
+			  </div>
+
+
 		</div>
 		<div id='searchResultArea'>
 			$resultData
@@ -143,8 +163,8 @@ class WeatherView {
 	</div>
 	<div>
 		<div id='ajaxSearchTool'>
-			<input type='text' id='cityInput' name='searchQueryCity'>
-			<input class='btn btn-primary' type='button' id='buttonSend' value='Search' />
+			<input type='text' id='cityInput' name='searchQueryCity' class='form-control'>
+			<input class='btn btn-primary' type='button' id='buttonSend' value='Sök på stad' />
 		</div>
 	</div>
 </div>

@@ -44,29 +44,40 @@
 
 body, html {
 	height: 100%;
+	
+	background-color: #F7F7F0;
 }
-
+/*
 #cityInput {
 	position: absolute;
 	z-index: 1;
-}
+	width: 300px;
+}*/
 
 #submitButton{
-	position: absolute;
-	left: 160px;
-	z-index: 1;	
+	position: relative;
+	/*float: left;*/
+	left: 0px;
+	z-index: 1;
 }
 
+/*
 #buttonSendQuery {
-	position: absolute;
+	position: relative;
 	left: 160px;
+	left:0px;
 	z-index: 1;		
+}*/
+
+.container {
+	background-color: white;
 }
 
 #searchTools {
 	position: absolute;
 	top: 60px;
 	left: 50px;
+	width: 500px;
 	z-index: 1;
 }
 
@@ -78,6 +89,8 @@ body, html {
 
 #searchResultChunk {
 	margin-top: 50px;
+	
+	padding-left: 20px;
 }
 
 #offlineNotice {
@@ -91,6 +104,56 @@ body, html {
 	text-align: center;
 	font-size: 1.2em;
 }
+
+.weatherSymbolImage {
+	margin-left: 30px;
+	margin-right: 30px;
+}
+
+.testRotation {
+	position: relative;
+	top: 450px;
+    -ms-transform: rotate(270deg); /* IE 9 */
+    -webkit-transform: rotate(270deg); /* Chrome, Safari, Opera */
+    transform: rotate(270deg);
+}
+
+.testRotation h1 {
+	font-size: 7em;
+	color:lightgray;
+}
+
+#searchResultArea {
+	width: 250px;
+}
+
+#favouritesListTitle {
+	background-color:#F5E3FA;
+	margin-top: 45px;
+	margin-bottom: 5px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 20px;
+
+	border-top-left-radius:0.27em;
+	border-top-right-radius:0.27em;
+
+}
+
+#favouriteList {
+	background-color:#F5E3FA;
+	margin-bottom: 5px;
+	padding-left: 20px;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	padding-right: 20px;
+
+	border-bottom-left-radius:0.27em;
+	border-bottom-right-radius:0.27em;
+
+}
+
 
 /*
 	background: rgb(54, 25, 25);

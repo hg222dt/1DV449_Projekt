@@ -21,27 +21,50 @@ WESE.isUserSignedIn = function(callback) {
 
 WESE.postStandardSearch = function() {
     
-    $.post('ajaxHandler.php', { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value}, 
-        function(returnedData){
-             //Skapa väderrapports-taggar
-             //Sätt in dem i dokumentet.
+    // $.post('ajaxHandler.php', { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value }, 
+    //     function(returnedData){
+    //          //Skapa väderrapports-taggar
+    //          //Sätt in dem i dokumentet.
 
-             var searchFailed = 1;
+    //          console.log(returnedData);
+            
+    //         var data = JSON.parse(returnedData);
 
-             if(returnedData.isEmptyObject) {
-                searchFailed = 0;
-             }
+    //         if(data.responseType === "multipleResults") {
+    //             WESE.createMultipleResultsDiv(data.results);
+    //         } else if (data.responseType === "noresult") {
+    //             WESE.createNoResultResult();
+    //         } else {
+    //              WESE.createWeatherItems(data, false);
+    //          }
+    // });
+
+    $.ajax({
+        type: "POST",
+        url: "ajaxHandler.php",
+        contentType : "application/x-www-form-urlencoded; charset=utf-8",
+        data: { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value },
+        }).done(function(returnedData) {
+
+            // console.log(returnedData);
             
             var data = JSON.parse(returnedData);
 
+            // console.log(data.dayItems[0].dayName);
+
+
             if(data.responseType === "multipleResults") {
                 WESE.createMultipleResultsDiv(data.results);
-            } else if (data.responseType === "noresult" || searchFailed == 0) {
+            } else if (data.responseType === "noresult") {
                 WESE.createNoResultResult();
             } else {
                  WESE.createWeatherItems(data, false);
              }
+
+    }).fail(function (jqXHR, textStatus) {
+        console.log("Faail: " + textStatus);
     });
+
 }
 
 WESE.postSearchGeonameId = function(geonameId, callback) {
@@ -173,6 +196,9 @@ WESE.createWeatherItems = function(data, isFavourite) {
             item.symbolVar = item.symbolVar[0];
         }
 
+        var dayNameItem = document.createElement('span');
+        dayNameItem.innerHTML = item.dayName;
+
         var divItem = document.createElement('div');
 
         divItem.className = 'weatherReportItem';
@@ -181,9 +207,13 @@ WESE.createWeatherItems = function(data, isFavourite) {
 
         var symbolImage = document.createElement('img');
 
+        symbolImage.setAttribute('class', 'weatherSymbolImage');
+
         var symbolVarText;
 
-        divItem.appendChild(symbolNameText);
+        divItem.appendChild(dayNameItem);
+
+        // divItem.appendChild(symbolNameText);
 
         symbolImage.setAttribute('src', "./images/" + item.symbolVar + ".png");
 

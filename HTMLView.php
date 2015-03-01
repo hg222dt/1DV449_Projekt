@@ -20,6 +20,7 @@ class HTMLView {
 		<link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
 		<link rel='stylesheet' type='text/css' href='./css/styles.css'>
 		<script type='text/javascript'src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBRAo9RNuLIHeS0XT9N0qbLOJbeF3PeIA0'></script>
+		<meta charset='utf-8'>
 	</head>
 	<body>
 		<div id='status'></div>
