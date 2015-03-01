@@ -2,6 +2,7 @@
 
 var WESE = WESE || {};
 
+WESE.activeMarker;
 
 
 WESE.initializeMap = function() {
@@ -62,12 +63,34 @@ WESE.createMap = function() {
     scaleControl: false,
     streetViewControl: false
   };
-  var map = new google.maps.Map(document.getElementById('map-canvas'),
+  WESE.map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
 
   //Associate the styled map with the MapTypeId and set it to display.
-  map.mapTypes.set('map_style', styledMap);
-  map.setMapTypeId('map_style');
+  WESE.map.mapTypes.set('map_style', styledMap);
+  WESE.map.setMapTypeId('map_style');
+}
+
+WESE.setMapToPosition = function(coordinates) {
+    console.log(coordinates);
+    console.log(coordinates[0]);
+    console.log(coordinates[1]);
+
+    var myLatlng = new google.maps.LatLng( coordinates[0], coordinates[1] );
+
+    WESE.map.setCenter( myLatlng );
+    WESE.map.setZoom(8);
+
+    if(WESE.activeMarker != undefined) {    
+      WESE.activeMarker.setMap(null);
+    }
+
+    WESE.activeMarker = new google.maps.Marker({
+        position: myLatlng,
+        map: WESE.map,
+        title:'',
+      draggable:false,
+    });
 }
 
 

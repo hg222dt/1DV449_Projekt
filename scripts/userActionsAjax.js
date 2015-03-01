@@ -144,6 +144,15 @@ WESE.createWeatherItems = function(data, isFavourite) {
         
     //Drar ut dagarna from vår response
 
+
+
+    var coordinates = [parseFloat(data.city.latitude), parseFloat(data.city.longitude)];
+
+    console.log(coordinates);
+
+    WESE.setMapToPosition(coordinates);
+
+
     var dayItems = data['dayItems'];
     var city = data['city'];
 
@@ -180,15 +189,12 @@ WESE.createWeatherItems = function(data, isFavourite) {
 
         encapsDiv.appendChild(divItem);
 
-/*
-            $markup .= "<div class='weatherReportItem'>" . gmdate("Y-m-d\TH:i:s\Z", $day->time) . " " . $day->symbolName . " " . $day->temperature . "<img src='./images/" . $day->symbolVar . ".png'></div>";
-*/
-
     });
 
     WESE.pushToDocument(encapsDiv);
 
 }
+
 
 WESE.pushToDocument = function(element) {
     var divToAppendTo = document.getElementById('searchResultArea');
