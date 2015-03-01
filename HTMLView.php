@@ -16,7 +16,7 @@ class HTMLView {
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>VadfanblirdetförväderPUNKTse</title>
+		<title>ViolaVäder</title>
 		<link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
 		<link rel='stylesheet' type='text/css' href='./css/styles.css'>
 		<script type='text/javascript'src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBRAo9RNuLIHeS0XT9N0qbLOJbeF3PeIA0'></script>

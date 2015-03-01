@@ -17,10 +17,10 @@ class GoogleAuth
 			$this->client->setClientSecret('BaiOu6BXppwJqRPv3lBl7zrq');
 			//$this->client->setRedirectUri('http://localhost:80/test_med_oauth/index.php');
 			
-			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/index.php');
+//			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/index.php');
 //			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/signinPage.php');
 
-//			$this->client->setRedirectUri('http://www.bigmachine.se/1DV449_Projekt/index.php');
+			$this->client->setRedirectUri('http://www.bigmachine.se/1DV449_Projekt/index.php');
 			//$this->client->setRedirectUri('http://www.bigmachine.se/test_med_oauth/index.php');
 			$this->client->setScopes('email');
 		}

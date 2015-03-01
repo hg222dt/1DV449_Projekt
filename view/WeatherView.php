@@ -113,7 +113,7 @@ class WeatherView {
 	</div>
 </div>
 <div class='col-sm-1'>
-	<div class='testRotation'>
+	<div class='rotation'>
 		<h1>ViolaVäder</h1>
 	</div>
 </div>
@@ -159,7 +159,7 @@ class WeatherView {
 	</div>
 </div>
 <div class='col-sm-1'>
-	<div class='testRotation'>
+	<div class='rotation'>
 		<h1>ViolaVäder</h1>
 	</div>
 </div>

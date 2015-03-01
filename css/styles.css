@@ -110,7 +110,7 @@ body, html {
 	margin-right: 30px;
 }
 
-.testRotation {
+.rotation {
 	position: relative;
 	top: 450px;
     -ms-transform: rotate(270deg); /* IE 9 */
@@ -118,7 +118,20 @@ body, html {
     transform: rotate(270deg);
 }
 
-.testRotation h1 {
+.rotation h1 {
+	font-size: 7em;
+	color:lightgray;
+}
+
+.rotationOffline {
+	position: relative;
+	top: 450px;
+    -ms-transform: rotate(270deg); /* IE 9 */
+    -webkit-transform: rotate(270deg); /* Chrome, Safari, Opera */
+    transform: rotate(270deg);
+}
+
+.rotationOffline h1 {
 	font-size: 7em;
 	color:lightgray;
 }
