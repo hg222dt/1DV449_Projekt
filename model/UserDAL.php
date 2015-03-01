@@ -115,7 +115,7 @@ class UserDAL {
 
 
 	public function deleteFavourite($geonameId, $userId) {
-
+	
 		$geonameId = (int) $geonameId;
 		$userId = (int) $userId;
 

@@ -51,11 +51,13 @@ class WeatherModel {
 		}
 	}
 
+	//Hämtar användar-id från Googles oAuth.
 	public function getUserIdFromGoogleId($user_google_id)
 	{
 		return $this->auth->getUserIdFromGoogleId($user_google_id);
 	}
 
+	//Hämtar städer med hjälp av geonameId-array.
 	public function getCitiesFromGeonameIds($cityIdArray) {
 
 		$cityDataArray = array();
@@ -83,7 +85,7 @@ class WeatherModel {
 	}
 
 
-
+	//Hämtar väder för specifik stad.
 	public function getSpecificCityWeather($cityDataArray) {
 
 		//var_dump($cityDataArray);
@@ -116,6 +118,7 @@ class WeatherModel {
 		return $weatherReport;
 	}
 
+	//Hämtar favoriter för användare
 	public function getFavourites($userId) {
 
 		$geonameIds = $this->userDAL->getUserFavouriteIds($userId);
@@ -149,12 +152,12 @@ class WeatherModel {
 		return $weatherReports;
 	}
 
-
+	//Tar bort specific favorit för användare.
 	public function deleteFavourite($geonameId, $userId) {
 		$this->userDAL->deleteFavourite($geonameId, $userId);
 	}
 
-
+	//Sparar favorit.
 	public function saveAsFavourite($cityId) {
 
 		$userId = $this->getUserIdFromGoogleId($_SESSION['logged_in_user_google_id']);

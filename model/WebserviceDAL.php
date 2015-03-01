@@ -1,5 +1,10 @@
 <?php
 
+/*
+*	Klass som sköter all hämtning av data från externa api:er
+*
+*/
+
 class WebserviceDAL {
 	
 	public function getGeonameIds($userInput) {
@@ -45,7 +50,7 @@ class WebserviceDAL {
 		$data = $this->curlGetRequest($getHierarchyUrl);
 
 
-		//Vi har hittat ett sökresultat med en stad
+		//Vi har hittat ett sökresultat med en stad. Nu pluckar vi ut den data vi vill ha från det vi fått ner, och packar in det i olika objekt.
 
 		$data = simplexml_load_string($data) or die("Error: Cannot create object");
 
@@ -107,10 +112,7 @@ class WebserviceDAL {
 			if ($aTime == $bTime) return 0;
 			   return ($aTime < $bTime) ? -1 : 1;
 			
-		};
-
-		//Hämta is prefferedname med geonameId
-		
+		};		
 
 		if($city->countryName == "Norway") {
 
@@ -168,6 +170,8 @@ class WebserviceDAL {
 		return new WeatherReport($weatherDaysSliced, $city);
 	}
 
+
+	//Gör curl-request till vald url
 	public function curlGetRequest($url) {
 
 		$ch = curl_init();

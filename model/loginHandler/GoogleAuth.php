@@ -14,7 +14,7 @@ class GoogleAuth
 		{
 
 			$this->client->setClientId('1007777563828-qf7sfjkv028b4ir0e3sk6slc1kji3m9q.apps.googleusercontent.com');
-			$this->client->setClientSecret('BaiOu6BXppwJqRPv3lBl7zrq');
+			$this->client->setClientSecret('very_secret');
 			//$this->client->setRedirectUri('http://localhost:80/test_med_oauth/index.php');
 			
 //			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/index.php');
@@ -74,13 +74,6 @@ class GoogleAuth
 
 	protected function storeUser($payload) 
 	{
-/*
-		var_dump(gettype($payload['id']));
-		var_dump($payload['id']);
-		$_SESSION['logged_in_user_google_id'] = $payload['id'];
-		var_dump($_SESSION['logged_in_user_google_id']);
-*/
-		//die();
 
 		$sql = "SELECT * FROM google_users WHERE google_id = {$payload['id']}";
 

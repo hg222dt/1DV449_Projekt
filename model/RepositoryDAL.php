@@ -1,5 +1,9 @@
 <?php
 
+/*
+*	Klass som hanterar alla data till och från vår databas.
+*/
+
 class RepositoryDAL {
 
 	protected $db;

@@ -35,7 +35,6 @@ class DB
 
 	public function getUserIdFromGoogleId($user_google_id)
 	{
-		//$user_google_id = (double)$user_google_id;
 
 		$sql = "SELECT * FROM google_users WHERE google_id = " . $user_google_id;
 

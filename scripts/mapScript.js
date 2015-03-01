@@ -9,6 +9,7 @@ WESE.initializeMap = function() {
 	WESE.createMap();
 }
 
+//Skapar en google maps-karta
 WESE.createMap = function() {
 
 	var myLatlng = new google.maps.LatLng(62.88722932,17.91876062);
@@ -37,13 +38,9 @@ WESE.createMap = function() {
     }
   ];
 
-  // Create a new StyledMapType object, passing it the array of styles,
-  // as well as the name to be displayed on the map type control.
   var styledMap = new google.maps.StyledMapType(styles,
     {name: "Styled Map"});
 
-  // Create a map object, and include the MapTypeId to add
-  // to the map type control.
   var mapOptions = {
     zoom: 5,
     center: myLatlng,
@@ -75,6 +72,7 @@ WESE.createMap = function() {
   WESE.map.setMapTypeId('map_style');
 }
 
+//Sätter den position på kartan som vi begär.
 WESE.setMapToPosition = function(coordinates) {
     var myLatlng = new google.maps.LatLng( coordinates[0], coordinates[1] );
 
@@ -92,8 +90,5 @@ WESE.setMapToPosition = function(coordinates) {
       draggable:false,
     });
 }
-
-
-//window.onload = MAPSCRIPT.initializeMap;
 
 

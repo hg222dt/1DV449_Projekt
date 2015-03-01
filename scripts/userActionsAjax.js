@@ -27,13 +27,8 @@ WESE.postStandardSearch = function() {
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
         data: { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value },
         }).done(function(returnedData) {
-
-            // console.log(returnedData);
             
             var data = JSON.parse(returnedData);
-
-            // console.log(data.dayItems[0].dayName);
-
 
             if(data.responseType === "multipleResults") {
                 WESE.createMultipleResultsDiv(data.results);
@@ -55,14 +50,13 @@ WESE.postSearchGeonameId = function(geonameId, callback) {
         function(returnedData){
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
-
             var data = JSON.parse(returnedData);
 
             callback(data);
     });
 }
 
-
+//Skapar resultat för att "inget kunde hittas"
 WESE.createNoResultResult = function() {
 
     var encapsDiv = document.createElement('div');
@@ -90,7 +84,7 @@ WESE.createNoResultResult = function() {
 
 }
 
-
+//Funktion för att skicka sökning när användaren valt stad från flervalsalternativ
 WESE.sendPickOneCityForm = function(geonameId) {
     
     $.get('ajaxHandler.php', { AJAX_USER_PICK_FROM_MULTIPLE: "", userPickFromMultiple: geonameId}, 
@@ -108,7 +102,7 @@ WESE.sendPickOneCityForm = function(geonameId) {
     });
 }
 
-
+//Skapar felrvalsalternativ
 WESE.createMultipleResultsDiv = function(resultsData) {
 
     //Drar ut dagarna from vår response
@@ -151,6 +145,7 @@ WESE.createMultipleResultsDiv = function(resultsData) {
 }
 
 
+//Skapar väder-items för väderleksrapporten
 WESE.createWeatherItems = function(data, isFavourite) {
         
     //Drar ut dagarna from vår response
@@ -219,6 +214,7 @@ WESE.pushToDocument = function(element) {
 
 }
 
+//Skapar stads-item för väderleksrapporten
 WESE.createCityDiv = function(city, isFavourite) {
 
     var divItem = document.createElement('div');       
@@ -246,6 +242,7 @@ WESE.createCityDiv = function(city, isFavourite) {
 
 }
 
+//Skapar länk för att lägga till eller ta bort som favorit, beroende på om den redan är användarens favorit eller inte.
 WESE.createFavToolLink = function(city, isFavourite, favToolLink) {
     if(isFavourite) {
 
@@ -278,7 +275,7 @@ WESE.createFavToolLink = function(city, isFavourite, favToolLink) {
     return favToolLink;
 }
 
-
+//Tar bort stad från favoriter, på servern.
 WESE.deleteCityFromFavourites = function(geonameId, callback) {
 
     $.post('ajaxHandler.php', { action: "AJAX_USER_DELETE_FAVOURITE", geonameId: geonameId}, 
@@ -292,12 +289,10 @@ WESE.deleteCityFromFavourites = function(geonameId, callback) {
 
 WESE.setTopNotice = function(noticeText) {
 
-    //TODO
-
 
 }
 
-
+//Sparar stad till favoriter på server.
 WESE.saveCityToFavourite = function (geonameId) {
 
     WESE.saveNewCityToFavourites(geonameId, function(returnedFavourites) {
@@ -328,6 +323,8 @@ WESE.saveNewCityToFavourites = function (geonameId, updateFavouritesList) {
 
 }
 
+
+//Laddar lista med favoriter från server.
 WESE.loadFavouritesList = function() {
 
     $.post('ajaxHandler.php', { action: "AJAX_USER_GET_FAVOURITES"}, 
@@ -343,6 +340,7 @@ WESE.loadFavouritesList = function() {
 }
 
 
+//Uppdaterar listan i klienten med favoriter.
 WESE.updateFavouritesList = function(favourites) {
 
     //Update faveoiters list in DOM
@@ -387,7 +385,7 @@ WESE.updateFavouritesList = function(favourites) {
 
 }
 
-
+//Sparar favortier till local storage
 WESE.saveFavouritesToLocalStorage = function(favourites) {
     //Save to Local storage
 
@@ -399,12 +397,15 @@ WESE.saveFavouritesToLocalStorage = function(favourites) {
     }
 }
 
+//Tar bort alla favoriter från localstorage
 WESE.deleteFavourites = function() {
     if(WESE.supports_html5_storage()) {
         localStorage.setItem("userFavourites", JSON.stringify({}));
     }
 }
 
+
+//Funktion för att se om användarens webbläsare har stöd för local storage
 WESE.supports_html5_storage = function () {
       try {
         return 'localStorage' in window && window['localStorage'] !== null;
@@ -457,18 +458,3 @@ WESE.dayItem = function (time, symbolName, temperature, period, symbolVar){
     }
 
 }
-
-/*
-Message.prototype.toString = function(){
-    return this.getText()+" ("+this.getDate()+")";
-}
-
-Message.prototype.getHTMLText = function() {
-      
-    return this.getText().replace(/[\n\r]/g, "<br />");
-}
-
-Message.prototype.getDateText = function() {
-    return this.getDate().toLocaleTimeString();
-}
-*/

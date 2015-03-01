@@ -2,23 +2,6 @@
 
 var WESE = WESE || {};
 
-// WESE.offlineInit = function() {
-
-  //Gör ajax-anrop till servern, och se om användaren har blivit online.
-/*
-  WESE.updateOnlineStatus('load');
-  document.body.addEventListener('offline', function () { WESE.updateOnlineStatus('offline') }, false);
-  document.body.addEventListener('online', function () { WESE.updateOnlineStatus('online') }, false);
-
-  WESE.initializeMap();
-
-  document.getElementById("buttonSendQuery").onclick = function(e) {WESE.postStandardSearch(); return false;}
-  WESE.textField = document.getElementById("cityInput");
-
-  WESE.loadFavouritesList();
-*/
-// }
-
 
 WESE.offlineInit = function() {
 
@@ -49,7 +32,7 @@ WESE.offlineInit = function() {
 }
 
 
-
+//Funktion för att säkerställa om local storage stödjs av annvändarens webbläsare
 WESE.supports_html5_storage = function () {
   try {
     return 'localStorage' in window && window['localStorage'] !== null;
@@ -58,7 +41,7 @@ WESE.supports_html5_storage = function () {
     }
 }
 
-
+//Renderar sida om användaren inte är inloggad
 WESE.renderOfflineSignedOutPage = function() {
 
   var offlineText = document.getElementById('offlineText');
@@ -74,6 +57,7 @@ WESE.renderOfflineSignedOutPage = function() {
 }
 
 
+//Renderar listan med favoriter
 WESE.renderFavouritesList = function(favouritesObject) {
 
   var favItems = favouritesObject.results;
@@ -105,7 +89,7 @@ WESE.renderFavouritesList = function(favouritesObject) {
 }
 
 
-
+//Skapar väderlekrapport för stad
 WESE.createWeatherItems = function(data) {
         
     //Drar ut dagarna from vår response
@@ -152,6 +136,7 @@ WESE.createWeatherItems = function(data) {
 
 }
 
+
 WESE.pushToDocument = function(element) {
     var divToAppendTo = document.getElementById('searchResultArea');
 
@@ -161,6 +146,7 @@ WESE.pushToDocument = function(element) {
 
 }
 
+//Skapar stads-div beroende på vilken stad användaren valt.
 WESE.createCityDiv = function(city) {
 
     var divItem = document.createElement('div');       

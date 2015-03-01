@@ -99,11 +99,8 @@ class WeatherController {
 					return $this->weatherView->showStartPage();
 					break;
 
-
+				//Användaren har gjort en vanlig sökning
 				case WeatherView::AJAX_USER_STANDARD_SEARCH:
-
-
-					//Ska returnera json-resultat från en sökning, till webbläsaren.
 
 					$cityDataArray = $this->weatherModel->checkCityResultFromQuery($this->weatherView->getPostedQuery());
 
@@ -111,7 +108,6 @@ class WeatherController {
 
 					if($cityAmount>1) {
 						//Visa flervalsalternativ
-
 						return $this->weatherModel->convertArrayWithObjectsToJson($cityDataArray); 
 
 					} elseif($cityAmount == 1) {
@@ -131,7 +127,7 @@ class WeatherController {
 					}
 					break;
 
-
+				//Användaren har valt stad från flerval
 				case WeatherView::AJAX_USER_PICK_FROM_MULTIPLE:
 
 					$cityDataArray = array();
@@ -150,7 +146,7 @@ class WeatherController {
 					return $this->weatherModel->convertObjectToJson($weatherReport);
 					break;
 
-
+					//Användaren har lagt till en favorit
 				case WeatherView::AJAX_USER_ADD_FAVOURITE:
 
 					$this->weatherModel->saveAsFavourite($this->weatherView->getPostedGeonameId());
@@ -162,6 +158,7 @@ class WeatherController {
 					return $favouritesDataJson;
 					break;
 
+					//Användaren har begärt alla favoriter
 				case WeatherView::AJAX_USER_GET_FAVOURITES:
 
 					$favouritesData = $this->weatherModel->getFavouritesDataUser($this->weatherView->getUserGoogleId());
@@ -171,6 +168,7 @@ class WeatherController {
 					return $favouritesDataJson;
 					break;
 
+					//Användaren söker väder med hjälp av geonameId
 				case WeatherView::AJAX_USER_SEARCH_GEONAME_ID:
 
 					$geonameId = $this->weatherView->getPostedGeonameId();
@@ -187,6 +185,7 @@ class WeatherController {
 					return $this->weatherModel->convertObjectToJson($weatherReport);
 					break;
 
+					//Tar bort favorit
 				case WeatherView::AJAX_USER_DELETE_FAVOURITE:
 
 					$userId = $this->weatherModel->getUserIdFromGoogleId($this->weatherView->getUserGoogleId());
@@ -198,6 +197,7 @@ class WeatherController {
 					return;
 					break;
 
+					//Ser om användaren är inloggad eller inte
 				case WeatherView::AJAX_IS_USER_SIGNED_IN:
 					return $this->weatherModel->isUserLoggedInJson();
 					break;
