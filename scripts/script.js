@@ -27,6 +27,17 @@ WESE.init = function() {
   document.getElementById("buttonSendQuery").onclick = function(e) {WESE.postStandardSearch(); return false;}
   WESE.textField = document.getElementById("cityInput");
 
+  WESE.textField.onkeypress = function(e){ 
+      if(!e) var e = window.event;
+      
+      if(e.keyCode == 13 && !e.shiftKey){
+
+          WESE.postStandardSearch();
+         
+          return false;
+      }
+  }
+
   WESE.loadFavouritesList();
 }
 

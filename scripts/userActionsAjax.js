@@ -21,24 +21,6 @@ WESE.isUserSignedIn = function(callback) {
 
 WESE.postStandardSearch = function() {
     
-    // $.post('ajaxHandler.php', { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value }, 
-    //     function(returnedData){
-    //          //Skapa väderrapports-taggar
-    //          //Sätt in dem i dokumentet.
-
-    //          console.log(returnedData);
-            
-    //         var data = JSON.parse(returnedData);
-
-    //         if(data.responseType === "multipleResults") {
-    //             WESE.createMultipleResultsDiv(data.results);
-    //         } else if (data.responseType === "noresult") {
-    //             WESE.createNoResultResult();
-    //         } else {
-    //              WESE.createWeatherItems(data, false);
-    //          }
-    // });
-
     $.ajax({
         type: "POST",
         url: "ajaxHandler.php",
