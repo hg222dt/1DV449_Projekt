@@ -122,15 +122,11 @@ class WeatherView {
 	<div id='meny' class='centerizedContent'>
 	</div>
 	<div id='searchTools'>
-		<div id='ajaxSearchTool'>
-<!--			
-			<input type='text' id='cityInput' name='searchQueryCity' class='form-control' required autofocus > 
-			<input class='btn btn-primary' type='button' id='buttonSendQuery' value='Sök på stad' /> 
--->
-		
+		<div id='ajaxSearchTool'>		
 			<div class='col-lg-6'>
 			    <div class='input-group'>
 			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad' name='searchQueryCity' required autofocus>
+			      <input id='csrfToken' value='{$_SESSION['csrfToken']}' hidden>
 			      <span class='input-group-btn'>
 			        <button class='btn btn-default' id='buttonSendQuery' type='button'>Sök!</button>
 			      </span>
@@ -173,6 +169,7 @@ class WeatherView {
 			<div class='col-lg-6'>
 			    <div class='input-group'>
 			      <input type='text' id='cityInput' class='form-control' placeholder='Sök stad' name='searchQueryCity' required autofocus>
+			      <input id='csrfToken' value='{$_SESSION['csrfToken']}' hidden>
 			      <span class='input-group-btn'>
 			        <button class='btn btn-default' id='buttonSendQuery' type='button'>Sök!</button>
 			      </span>
@@ -197,6 +194,8 @@ class WeatherView {
 	}
 
 	public function showStartPage() {
+		$_SESSION['csrfToken'] = base64_encode( openssl_random_pseudo_bytes(32));
+		// $_SESSION['csrfToken'] = "111";
 		return $this->getPageFoundation("");
 	}
 

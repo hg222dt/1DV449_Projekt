@@ -5,9 +5,9 @@ var WESE = WESE || {};
 
 WESE.isUserSignedIn = function(callback) {
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "ajaxHandler.php",
-        data: "AJAX_IS_USER_SIGNED_IN",
+        data: { action: "AJAX_IS_USER_SIGNED_IN", csrfToken: WESE.csrfToken },
         dataType : "json"
         }).done(function(data) {
             data = JSON.parse(data);
@@ -25,7 +25,7 @@ WESE.postStandardSearch = function() {
         type: "POST",
         url: "ajaxHandler.php",
         contentType : "application/x-www-form-urlencoded; charset=utf-8",
-        data: { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value },
+        data: { action: "AJAX_USER_STANDARD_SEARCH", searchQueryCity: WESE.textField.value, csrfToken: WESE.csrfToken },
         }).done(function(returnedData) {
             
             var data = JSON.parse(returnedData);
@@ -46,7 +46,7 @@ WESE.postStandardSearch = function() {
 
 WESE.postSearchGeonameId = function(geonameId, callback) {
     
-    $.post('ajaxHandler.php', { action: "AJAX_USER_SEARCH_GEONAME_ID", geonameId: geonameId}, 
+    $.post('ajaxHandler.php', { action: "AJAX_USER_SEARCH_GEONAME_ID", geonameId: geonameId, csrfToken: WESE.csrfToken}, 
         function(returnedData){
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
@@ -87,7 +87,7 @@ WESE.createNoResultResult = function() {
 //Funktion för att skicka sökning när användaren valt stad från flervalsalternativ
 WESE.sendPickOneCityForm = function(geonameId) {
     
-    $.get('ajaxHandler.php', { AJAX_USER_PICK_FROM_MULTIPLE: "", userPickFromMultiple: geonameId}, 
+    $.get('ajaxHandler.php', { AJAX_USER_PICK_FROM_MULTIPLE: "", userPickFromMultiple: geonameId, csrfToken: WESE.csrfToken}, 
         function(returnedData){
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
@@ -278,7 +278,7 @@ WESE.createFavToolLink = function(city, isFavourite, favToolLink) {
 //Tar bort stad från favoriter, på servern.
 WESE.deleteCityFromFavourites = function(geonameId, callback) {
 
-    $.post('ajaxHandler.php', { action: "AJAX_USER_DELETE_FAVOURITE", geonameId: geonameId}, 
+    $.post('ajaxHandler.php', { action: "AJAX_USER_DELETE_FAVOURITE", geonameId: geonameId, csrfToken: WESE.csrfToken}, 
         function(result){
             callback();
     });
@@ -305,7 +305,7 @@ WESE.saveNewCityToFavourites = function (geonameId, updateFavouritesList) {
 
     //Make ajax-call to server to add favourite.
 
-    $.post('ajaxHandler.php', { action: "AJAX_USER_ADD_FAVOURITE", geonameId: geonameId}, 
+    $.post('ajaxHandler.php', { action: "AJAX_USER_ADD_FAVOURITE", geonameId: geonameId, csrfToken: WESE.csrfToken}, 
 
         function(returnedFavourites){
              //Skapa väderrapports-taggar
@@ -327,10 +327,11 @@ WESE.saveNewCityToFavourites = function (geonameId, updateFavouritesList) {
 //Laddar lista med favoriter från server.
 WESE.loadFavouritesList = function() {
 
-    $.post('ajaxHandler.php', { action: "AJAX_USER_GET_FAVOURITES"}, 
+    $.post('ajaxHandler.php', { action: "AJAX_USER_GET_FAVOURITES", csrfToken: WESE.csrfToken}, 
 
         function(returnedFavourites){
 
+            // console.log(returnedFavourites);
             var report = returnedFavourites.results;
 
             var data = JSON.parse(returnedFavourites);

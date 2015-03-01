@@ -199,8 +199,10 @@ class WeatherController {
 
 					//Ser om användaren är inloggad eller inte
 				case WeatherView::AJAX_IS_USER_SIGNED_IN:
+
 					return $this->weatherModel->isUserLoggedInJson();
 					break;
+				
 
 				default:
 

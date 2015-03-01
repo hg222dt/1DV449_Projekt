@@ -6,7 +6,6 @@
 	require_once("controller/WeatherController.php");
 
 
-
 	$weatherController = new WeatherController();
 
 	$auth = $weatherController->weatherModel->auth;

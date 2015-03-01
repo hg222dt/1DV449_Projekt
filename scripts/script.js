@@ -4,6 +4,8 @@ var WESE = WESE || {};
 
 WESE.init = function() {
 
+  WESE.csrfToken = document.getElementById('csrfToken').value;
+
   if(WESE.supports_html5_storage()) {
       WESE.isUserSignedIn(function(userSignedIn) {
       localStorage.setItem("userSignedIn", userSignedIn);

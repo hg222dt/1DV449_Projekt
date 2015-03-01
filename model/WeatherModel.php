@@ -21,7 +21,6 @@ class WeatherModel {
 		$db = new DB;
 		$googleClient = new Google_Client;
 		$this->auth = new GoogleAuth($db, $googleClient);
-
 	}
 
 	//Returns City data on rsult of users query. Multiple cities if needed.
@@ -165,6 +164,7 @@ class WeatherModel {
 		$this->userDAL->saveAsFavourite($userId, $cityId);
 
 	}
+
 
 	public function convertObjectToJson($object) {
 		return json_encode($object);
