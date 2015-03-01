@@ -14,14 +14,13 @@ class GoogleAuth
 		{
 
 			$this->client->setClientId('1007777563828-qf7sfjkv028b4ir0e3sk6slc1kji3m9q.apps.googleusercontent.com');
-			$this->client->setClientSecret('verysecret');
+			$this->client->setClientSecret('BaiOu6BXppwJqRPv3lBl7zrq');
 			
-		//	$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/index.php');
-			$this->client->setRedirectUri('http://www.bigmachine.se/1DV449_Projekt/index.php');
+			$this->client->setRedirectUri('http://localhost:80/1DV449_Projekt/index.php');
+			// $this->client->setRedirectUri('http://www.bigmachine.se/1DV449_Projekt/index.php');
 			
 			$this->client->setScopes('email');
 		}
-
 	}
 
 	public function isLoggedIn() 
