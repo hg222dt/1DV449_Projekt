@@ -75,7 +75,6 @@ WESE.renderOfflineSignedOutPage = function() {
 
 
 WESE.renderFavouritesList = function(favouritesObject) {
-  //console.log(favouritesObject.results);
 
   var favItems = favouritesObject.results;
 

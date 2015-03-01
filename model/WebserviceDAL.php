@@ -4,7 +4,7 @@ class WebserviceDAL {
 	
 	public function getGeonameIds($userInput) {
 
-		$getGeonameIdUrl = "http://api.geonames.org/search?name_equals=" . str_replace(" ", "%20", $userInput) . "&maxRows=20&username=henkenet&featureClass=P";
+		$getGeonameIdUrl = "http://api.geonames.org/search?name_equals=" . str_replace(" ", "%20", $userInput) . "&maxRows=20&username=henkenet&featureClass=P&country=SE&country=NO&country=DK";
 		$textSearchData = $this->curlGetRequest($getGeonameIdUrl);
 
 		$textSearchData = simplexml_load_string($textSearchData) or die("Error: Cannot create object");
@@ -51,11 +51,12 @@ class WebserviceDAL {
 
 		$hierarchyObjects = $data->children();
 
-
 		$cityObj = $getObjFromXml("fcl", "P", $hierarchyObjects);
 		$muncipObj = $getObjFromXml("fcode", "ADM2", $hierarchyObjects);
 		$provinceObj  = $getObjFromXml("fcode", "ADM1", $hierarchyObjects);
 		$countryObj = $getObjFromXml("fcode", "PCLI", $hierarchyObjects);
+
+		$countryName = null;
 
 		if($cityObj != null && property_exists($cityObj, 'name') && property_exists($cityObj, 'toponymName')){
 			$cityName = (string) $cityObj->name;
@@ -78,6 +79,11 @@ class WebserviceDAL {
 
 		if($countryObj != null && property_exists($countryObj, 'name')){
 			$countryName = (string) $countryObj->name;
+
+		}
+
+		if($countryName == null) {
+			$countryName = "No country name found";
 		}
 
 		return new City((string)$geonameId, $cityName, $toponymName, $muncipName, $provinceName, $countryName, null, $latitude, $longitude);

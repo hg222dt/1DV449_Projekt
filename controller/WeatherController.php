@@ -119,7 +119,7 @@ class WeatherController {
 							$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
 						} catch (Exception $e) {
 							//returnera felmeddelande
-							return;
+							return $this->weatherModel->getJsonResultNoMatch();
 						}
 
 						//Returnera json-resultat från väderrapporten.
@@ -127,7 +127,7 @@ class WeatherController {
 
 					} else {
 						//Returnera "No-match"
-						return$this->weatherModel->getJsonResultNoMatch();
+						return $this->weatherModel->getJsonResultNoMatch();
 					}
 					break;
 
@@ -142,7 +142,7 @@ class WeatherController {
 						$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
 					} catch (Exception $e) {
 						//returnera felmeddelande
-						return;
+						return $this->weatherModel->getJsonResultNoMatch();
 					}
 
 					//Returnera json-resultat från väderrapporten.
@@ -181,7 +181,7 @@ class WeatherController {
 						$weatherReport = $this->weatherModel->getSpecificCityWeather($cityDataArray);
 					} catch (Exception $e) {
 						//returnera felmeddelande
-						return;
+						return $this->weatherModel->getJsonResultNoMatch();
 					}
 
 					return $this->weatherModel->convertObjectToJson($weatherReport);

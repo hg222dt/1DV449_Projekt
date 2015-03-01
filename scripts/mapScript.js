@@ -72,10 +72,6 @@ WESE.createMap = function() {
 }
 
 WESE.setMapToPosition = function(coordinates) {
-    console.log(coordinates);
-    console.log(coordinates[0]);
-    console.log(coordinates[1]);
-
     var myLatlng = new google.maps.LatLng( coordinates[0], coordinates[1] );
 
     WESE.map.setCenter( myLatlng );

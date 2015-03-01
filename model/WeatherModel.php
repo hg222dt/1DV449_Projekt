@@ -97,18 +97,14 @@ class WeatherModel {
 			//Ska vi använda cachad data på databasen.
 			if($cityDataArray[0]->nextUpdate > time()) {
 				//Använd cache. Hämta väderrapporten från databasen. Visa den som resultat.
-//				var_dump("Use cache");
 
 				$weatherReport = $this->weatherApiHandler->getWeatherDaysFromRepository($cityDataArray[0]);
 			} else {
-
 				$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);				
-
 				$this->weatherApiHandler->updateOldWeatherReportFromRepository($cityDataArray[0], $weatherReport);
 			}
 
 		} else {
-//			var_dump("Dont use cache");
 			
 			$weatherReport = $this->weatherApiHandler->retrieveWeatherDataFromWeb($cityDataArray);
 

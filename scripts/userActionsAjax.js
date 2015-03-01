@@ -26,11 +26,17 @@ WESE.postStandardSearch = function() {
              //Skapa väderrapports-taggar
              //Sätt in dem i dokumentet.
 
+             var searchFailed = 1;
+
+             if(returnedData.isEmptyObject) {
+                searchFailed = 0;
+             }
+            
             var data = JSON.parse(returnedData);
 
             if(data.responseType === "multipleResults") {
                 WESE.createMultipleResultsDiv(data.results);
-            } else if (data.responseType === "noresult") {
+            } else if (data.responseType === "noresult" || searchFailed == 0) {
                 WESE.createNoResultResult();
             } else {
                  WESE.createWeatherItems(data, false);
@@ -71,7 +77,7 @@ WESE.createNoResultResult = function() {
     hTag.appendChild(hNode);
 
     divItem.appendChild(hTag);
-    divItem.appendChild(textTag);f
+    divItem.appendChild(textTag);
 
     encapsDiv.appendChild(divItem);
 
@@ -144,11 +150,7 @@ WESE.createWeatherItems = function(data, isFavourite) {
         
     //Drar ut dagarna from vår response
 
-
-
     var coordinates = [parseFloat(data.city.latitude), parseFloat(data.city.longitude)];
-
-    console.log(coordinates);
 
     WESE.setMapToPosition(coordinates);
 
